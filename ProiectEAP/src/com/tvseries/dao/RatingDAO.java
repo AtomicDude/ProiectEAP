@@ -7,9 +7,11 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-public class RatingDAO {
+public class RatingDAO
+{
 
-    public RatingDAO(){
+    public RatingDAO()
+    {
 
     }
 

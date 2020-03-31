@@ -4,13 +4,15 @@ import com.tvseries.tables.Appears;
 
 import java.sql.*;
 
-public class AppearsDAO{
-
-    public AppearsDAO(){
+public class AppearsDAO
+{
+    public AppearsDAO()
+    {
 
     }
 
-    static public Appears getAppears(int episode_id) throws Exception {
+    static public Appears getAppears(int episode_id) throws Exception
+    {
         String path = "jdbc:mysql://localhost:3306/tvseries_db";
         String dbuser = "admin1";
         String dbpassword = "admin1#password";
@@ -21,7 +23,8 @@ public class AppearsDAO{
         Statement st = con.createStatement(); //create a statement
         ResultSet rs = st.executeQuery(query); //execute the query using the statement and store the result
 
-        if(rs.next()) {
+        if (rs.next())
+        {
             Appears app = new Appears(episode_id, rs.getInt("character_id")); //create an actor with the information obtained
 
             st.close();
@@ -35,7 +38,7 @@ public class AppearsDAO{
 
         return null;
     }
-    // test4
+
     static public int addAppears(int episode_id, int character_id) throws Exception
     {
         String path = "jdbc:mysql://localhost:3306/tvseries_db";
