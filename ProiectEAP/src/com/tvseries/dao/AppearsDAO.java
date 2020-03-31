@@ -35,7 +35,7 @@ public class AppearsDAO{
 
         return null;
     }
-    // test3
+    // test4
     static public int addAppears(int episode_id, int character_id) throws Exception
     {
         String path = "jdbc:mysql://localhost:3306/tvseries_db";
