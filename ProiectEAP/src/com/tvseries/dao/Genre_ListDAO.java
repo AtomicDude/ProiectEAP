@@ -1,8 +1,11 @@
 package com.tvseries.dao;
 
+import com.tvseries.tables.Genre;
 import com.tvseries.tables.Genre_List;
+import com.tvseries.utils.C3P0DataSource;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class Genre_ListDAO {
 
@@ -10,39 +13,37 @@ public class Genre_ListDAO {
 
     }
 
-    static public Genre_List getGenre_List(int series_id) throws Exception
+    static public ArrayList<Genre> getGenre_List(int series_id) throws Exception
     {
-        String path = "jdbc:mysql://localhost:3306/tvseries_db";
-        String dbuser = "admin1";
-        String dbpassword = "admin1#password";
         String query = "select * from t_genre_list where series_id = " + series_id;
 
-        Class.forName("com.mysql.cj.jdbc.Driver"); //load jdbc driver
-        Connection con = DriverManager.getConnection(path, dbuser, dbpassword); //establish connection
+        Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
         Statement st = con.createStatement(); //create a statement
         ResultSet rs = st.executeQuery(query); //execute the query using the statement and store the result
 
-        if(rs.next()) {
-            //TODO: return list of genres
+        ArrayList<Genre> gnlist = new ArrayList<Genre>();
+
+        while(rs.next())
+        {
+            gnlist.add(GenreDAO.getGenre(rs.getInt("genre_id")));
         }
 
         st.close();
+        rs.close();
         con.close();
 
-        return null;
+        return gnlist;
     }
 
-    static public int addGenre_List(String name) throws Exception //TODO: de terminat
+    static public int addGenre_List(int genre_id, int series_id) throws Exception
     {
-        String path = "jdbc:mysql://localhost:3306/tvseries_db";
-        String dbuser = "admin1";
-        String dbpassword = "admin1#password";
-        String query = "insert into t_genre values(null, ?)";
+        String query = "insert into t_genre_list values(?, ?)";
 
-        Class.forName("com.mysql.cj.jdbc.Driver"); //load jdbc driver
-        Connection con = DriverManager.getConnection(path, dbuser, dbpassword); //establish connection
+        Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
         PreparedStatement st = con.prepareStatement(query); //create a statement
-        st.setString(1, name);
+        st.setInt(1, genre_id);
+        st.setInt(2, series_id);
+
         int rows = st.executeUpdate(); //execute the query using the statement and store the result
 
         st.close(); //close the statement
@@ -51,18 +52,17 @@ public class Genre_ListDAO {
         return rows; //return the number of rows affected
     }
 
-    static public int updateGenre(int genre_id, String new_name) throws Exception //TODO: de terminat
+    static public int updateGenre_List(int genre_id, int series_id, int new_genre_id, int new_series_id) throws Exception //TODO: de terminat
     {
-        String path = "jdbc:mysql://localhost:3306/tvseries_db";
-        String dbuser = "admin1";
-        String dbpassword = "admin1#password";
-        String query = "update t_genre set name = ? where genre_id = ?";
+        String query = "update t_genre_list set genre_id = ?, series_id = ? where genre_id = ? and series_id = ?";
 
-        Class.forName("com.mysql.cj.jdbc.Driver"); //load jdbc driver
-        Connection con = DriverManager.getConnection(path, dbuser, dbpassword); //establish connection
+        Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
         PreparedStatement st = con.prepareStatement(query); //create a statement
-        st.setString(1, new_name);
-        st.setInt(2, genre_id);
+        st.setInt(1, new_genre_id);
+        st.setInt(2, new_series_id);
+        st.setInt(3, genre_id);
+        st.setInt(4, series_id);
+
         int rows = st.executeUpdate(); //execute the query using the statement and store the result
 
         st.close(); //close the statement

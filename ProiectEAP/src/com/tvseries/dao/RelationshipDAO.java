@@ -1,23 +1,22 @@
 package com.tvseries.dao;
 
 import com.tvseries.tables.Relationship;
+import com.tvseries.utils.C3P0DataSource;
 
 import java.sql.*;
 
-public class RelationshipDAO {
-
-    public RelationshipDAO(){
+public class RelationshipDAO
+{
+    public RelationshipDAO()
+    {
 
     }
 
-    static public boolean getRelationship(int user1_id, int user2_id, int status_id) throws Exception {
-        String path = "jdbc:mysql://localhost:3306/tvseries_db";
-        String dbuser = "admin1";
-        String dbpassword = "admin1#password";
+    static public boolean getRelationship(int user1_id, int user2_id, int status_id) throws Exception
+    {
         String query = "select * from t_relationship where user1_id = ? and user2_id = ? and status_id = ?";
 
-        Class.forName("com.mysql.cj.jdbc.Driver"); //load jdbc driver
-        Connection con = DriverManager.getConnection(path, dbuser, dbpassword); //establish connection
+        Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
         PreparedStatement st = con.prepareStatement(query); //create a
         st.setInt(1, user1_id);
         st.setInt(2, user2_id);

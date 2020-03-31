@@ -29,5 +29,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="c3p0:c3p0:0.9.1.2" level="project" />
+    <orderEntry type="library" name="mysql:mysql-connector-java:8.0.19" level="project" />
   </component>
 </module>
