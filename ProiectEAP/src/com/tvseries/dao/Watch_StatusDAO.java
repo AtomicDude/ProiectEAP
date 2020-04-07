@@ -3,10 +3,7 @@ package com.tvseries.dao;
 import com.tvseries.tables.Watch_Status;
 import com.tvseries.utils.C3P0DataSource;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 
 public class Watch_StatusDAO
 {
@@ -39,5 +36,38 @@ public class Watch_StatusDAO
         con.close();
 
         return null;
+    }
+
+    static public int addWatch_Status(String name) throws Exception
+    {
+        String query = "insert into t_watch_status(null,?)";
+
+        Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
+        PreparedStatement st = con.prepareStatement(query); //create a statement
+        st.setString(1, name);
+
+        int rows = st.executeUpdate();
+
+        st.close();
+        con.close();
+
+        return rows;
+    }
+
+    static public int updateWatch_Status(int status_id, String new_name) throws Exception
+    {
+        String query = "update t_watch_status set name = ? where status_id = ?";
+
+        Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
+        PreparedStatement st = con.prepareStatement(query); //create a statement
+        st.setString(1, new_name);
+        st.setInt(2, status_id);
+
+        int rows = st.executeUpdate();
+
+        st.close();
+        con.close();
+
+        return rows;
     }
 }

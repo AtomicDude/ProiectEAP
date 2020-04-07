@@ -3,10 +3,7 @@ package com.tvseries.dao;
 import com.tvseries.tables.Seasons_List;
 import com.tvseries.utils.C3P0DataSource;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 
 public class Seasons_ListDAO
 {
@@ -39,5 +36,47 @@ public class Seasons_ListDAO
         con.close();
 
         return null;
+    }
+
+    static public int addSeasons_List(int season_id, int user_id, Date start_date, Date end_date, int current_ep, int status_id ) throws Exception
+    {
+        String query = "insert into t_seasons_list(season_id, user_id, start_date, end_date, current_ep, status_id)";
+
+        Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
+        PreparedStatement st = con.prepareStatement(query); //create a statement
+        st.setInt(1, season_id);
+        st.setInt(2, user_id);
+        st.setDate(3, start_date);
+        st.setDate(4, end_date);
+        st.setInt(5, current_ep);
+        st.setInt(6, status_id);
+
+        int rows = st.executeUpdate();
+
+        st.close();
+        con.close();
+
+        return rows;
+    }
+
+    static public int updateSeasons_List(int season_id, int user_id, Date new_start_date, Date new_end_date, int new_current_ep, int new_status_id ) throws Exception
+    {
+        String query = "update t_seasons_list set start_date = ?, end_date = ?, current_ep = ?, status_id = ? where season_id = ? and user_id = ?";
+
+        Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
+        PreparedStatement st = con.prepareStatement(query); //create a statement
+        st.setDate(1, new_start_date);
+        st.setDate(2, new_end_date);
+        st.setInt(3, new_current_ep);
+        st.setInt(4, new_status_id);
+        st.setInt(5, season_id);
+        st.setInt(6, season_id);
+
+        int rows = st.executeUpdate();
+
+        st.close();
+        con.close();
+
+        return rows;
     }
 }
