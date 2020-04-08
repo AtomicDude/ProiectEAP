@@ -75,4 +75,20 @@ public class CharacterDAO
 
         return rows; //return the number of rows affected
     }
+
+    static public int deleteCharacter(int character_id) throws Exception
+    {
+        String query = "delete from t_character where character_id =?";
+
+        Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
+        PreparedStatement st = con.prepareStatement(query); //create a statement
+        st.setInt(1, character_id);
+
+        int rows = st.executeUpdate();
+
+        st.close();
+        con.close();
+
+        return rows;
+    }
 }

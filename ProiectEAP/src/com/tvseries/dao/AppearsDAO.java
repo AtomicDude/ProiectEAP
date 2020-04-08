@@ -73,4 +73,21 @@ public class AppearsDAO
 
         return rows; //return the number of rows affected
     }
+
+    static public int deleteAppears(int episode_id) throws Exception
+    {
+        String query = "delete from t_appears where episode_id = ?";
+
+        Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
+        PreparedStatement st = con.prepareStatement(query); //create a statement
+        st.setInt(1, episode_id);
+
+        int rows = st.executeUpdate();
+
+        st.close();
+        con.close();
+
+        return rows;
+    }
+
 }

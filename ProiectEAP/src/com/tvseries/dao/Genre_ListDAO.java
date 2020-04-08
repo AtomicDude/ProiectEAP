@@ -70,4 +70,21 @@ public class Genre_ListDAO {
 
         return rows; //return the number of rows affected
     }
+
+    static public int deleteGenre_List(int genre_id, int series_id) throws Exception
+    {
+        String query = "delete from t_genre_list where genre_id = ? and series_id = ?";
+
+        Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
+        PreparedStatement st = con.prepareStatement(query); //create a statement
+        st.setInt(1, genre_id);
+        st.setInt(2, series_id);
+
+        int rows = st.executeUpdate();
+
+        st.close();
+        con.close();
+
+        return rows;
+    }
 }

@@ -67,4 +67,22 @@ public class Binge_WatchingDAO
 
         return rows; //return the number of rows affected
     }
+
+    static public int deleteBinge_Watchin(int user1_id, int user2_id, int season_id) throws Exception
+    {
+        String query = "delete from t_binge_watching where user1_id = ? and user2_id = ? and season_id = ?";
+
+        Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
+        PreparedStatement st = con.prepareStatement(query); //create a statement
+        st.setInt(1, user1_id);
+        st.setInt(2, user2_id);
+        st.setInt(3, season_id);
+
+        int rows = st.executeUpdate();
+
+        st.close();
+        con.close();
+
+        return rows;
+    }
 }

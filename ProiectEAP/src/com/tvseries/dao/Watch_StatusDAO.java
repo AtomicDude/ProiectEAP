@@ -70,4 +70,20 @@ public class Watch_StatusDAO
 
         return rows;
     }
+
+    static public int deleteWatch_Status(int status_id) throws Exception
+    {
+        String query = "delete from t_watch_status where status_id = ?";
+
+        Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
+        PreparedStatement st = con.prepareStatement(query); //create a statement
+        st.setInt(1, status_id);
+
+        int rows = st.executeUpdate();
+
+        st.close();
+        con.close();
+
+        return rows;
+    }
 }

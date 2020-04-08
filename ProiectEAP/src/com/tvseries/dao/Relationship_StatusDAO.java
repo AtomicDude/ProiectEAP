@@ -53,19 +53,36 @@ public class Relationship_StatusDAO
         return rows; //return the number of rows affected
     }
 
-    static public int updateGenre(int genre_id, String new_name) throws Exception
+    static public int updateRelationship_Status(int status_id, String new_name) throws Exception
     {
-        String query = "update t_genre set name = ? where genre_id = ?";
+        String query = "update t_relationship_status set name = ? where status_id = ?";
 
         Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
         PreparedStatement st = con.prepareStatement(query); //create a statement
         st.setString(1, new_name);
-        st.setInt(2, genre_id);
+        st.setInt(2, status_id);
+
         int rows = st.executeUpdate(); //execute the query using the statement and store the result
 
         st.close(); //close the statement
         con.close(); //close the connection
 
         return rows; //return the number of rows affected
+    }
+
+    static public int deleteGenre(int status_id) throws Exception
+    {
+        String query ="delete from t_relationship_status where status_id = ?";
+
+        Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
+        PreparedStatement st = con.prepareStatement(query); //create a statement
+        st.setInt(1, status_id);
+
+        int rows = st.executeUpdate();
+
+        st.close();
+        con.close();
+
+        return rows;
     }
 }

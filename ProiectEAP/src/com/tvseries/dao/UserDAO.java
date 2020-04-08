@@ -79,6 +79,22 @@ public class UserDAO
         con.close();
 
         return rows;
+    }
 
+    static public int deleteUser(int user_id) throws Exception
+    {
+        String query = "delet from t_user where user_id = ?";
+
+        Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
+        PreparedStatement st = con.prepareStatement(query); //create a statement
+        st.setInt(1, user_id);
+
+        int rows = st.executeUpdate();
+
+
+        st.close();
+        con.close();
+
+        return rows;
     }
 }

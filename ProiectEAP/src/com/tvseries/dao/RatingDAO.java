@@ -3,6 +3,7 @@ package com.tvseries.dao;
 import com.tvseries.tables.Rating;
 import com.tvseries.utils.C3P0DataSource;
 
+import java.security.spec.RSAOtherPrimeInfo;
 import java.sql.*;
 
 public class RatingDAO
@@ -70,5 +71,21 @@ public class RatingDAO
         con.close(); //close the connection
 
         return rows; //return the number of rows affected
+    }
+
+    static public int deleteRating(int rating_id) throws Exception
+    {
+        String query = "delete from t_rating where rating_id = ?";
+
+        Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
+        PreparedStatement st = con.prepareStatement(query); //create a statement
+        st.setInt(1, rating_id);
+
+        int rows = st.executeUpdate();
+
+        st.close();
+        con.close();
+
+        return rows;
     }
 }

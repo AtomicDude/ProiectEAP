@@ -4,6 +4,7 @@ import com.tvseries.tables.Seasons_List;
 import com.tvseries.utils.C3P0DataSource;
 
 import java.sql.*;
+import java.util.concurrent.ExecutorService;
 
 public class Seasons_ListDAO
 {
@@ -70,7 +71,24 @@ public class Seasons_ListDAO
         st.setInt(3, new_current_ep);
         st.setInt(4, new_status_id);
         st.setInt(5, season_id);
-        st.setInt(6, season_id);
+        st.setInt(6, user_id);
+
+        int rows = st.executeUpdate();
+
+        st.close();
+        con.close();
+
+        return rows;
+    }
+
+    static public int deleteSeasons_List(int season_id, int user_id) throws Exception
+    {
+        String query = "delete from t_seasons_list where season_id = ? and user_id = ?";
+
+        Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
+        PreparedStatement st = con.prepareStatement(query); //create a statement
+        st.setInt(1, season_id);
+        st.setInt(2, user_id);
 
         int rows = st.executeUpdate();
 
