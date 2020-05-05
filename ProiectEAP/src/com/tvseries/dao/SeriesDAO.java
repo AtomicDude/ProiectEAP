@@ -40,7 +40,7 @@ public class SeriesDAO
 
     static public int addSeries(String title, int rating_id) throws Exception
     {
-        String query = "insert into t_series(null,?,?)";
+        String query = "insert into t_series values(null,?,?)";
 
         Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
         PreparedStatement st = con.prepareStatement(query); //create a statement

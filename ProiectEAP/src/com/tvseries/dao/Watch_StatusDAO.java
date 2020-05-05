@@ -40,7 +40,7 @@ public class Watch_StatusDAO
 
     static public int addWatch_Status(String name) throws Exception
     {
-        String query = "insert into t_watch_status(null,?)";
+        String query = "insert into t_watch_status values(null,?)";
 
         Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
         PreparedStatement st = con.prepareStatement(query); //create a statement

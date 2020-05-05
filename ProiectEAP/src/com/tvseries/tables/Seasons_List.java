@@ -1,12 +1,12 @@
 package com.tvseries.tables;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 public class Seasons_List {
     private int season_id;
     private int user_id;
-    private Date start_date;
-    private Date end_date;
+    private LocalDate start_date;
+    private LocalDate end_date;
     private int current_ep;
     private int status_id;
 
@@ -14,7 +14,7 @@ public class Seasons_List {
 
     }
 
-    public Seasons_List(int season_id, int user_id, Date start_date, Date end_date, int current_ep, int status_id) {
+    public Seasons_List(int season_id, int user_id, LocalDate start_date, LocalDate end_date, int current_ep, int status_id) {
         this.season_id = season_id;
         this.user_id = user_id;
         this.start_date = start_date;
@@ -39,19 +39,19 @@ public class Seasons_List {
         this.user_id = user_id;
     }
 
-    public Date getStart_date() {
+    public LocalDate getStart_date() {
         return start_date;
     }
 
-    public void setStart_date(Date start_date) {
+    public void setStart_date(LocalDate start_date) {
         this.start_date = start_date;
     }
 
-    public Date getEnd_date() {
+    public LocalDate getEnd_date() {
         return end_date;
     }
 
-    public void setEnd_date(Date end_date) {
+    public void setEnd_date(LocalDate end_date) {
         this.end_date = end_date;
     }
 

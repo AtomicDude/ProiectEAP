@@ -1,15 +1,15 @@
 package com.tvseries.tables;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 public class Actor
 {
     private int actor_id;
     private String first_name;
     private String last_name;
-    private Date birth_date;
+    private LocalDate birth_date;
 
-    public Actor(int actor_id, String first_name, String last_name, Date birth_date)
+    public Actor(int actor_id, String first_name, String last_name, LocalDate birth_date)
     {
         this.actor_id = actor_id;
         this.first_name = first_name;
@@ -47,12 +47,12 @@ public class Actor
         this.last_name = last_name;
     }
 
-    public Date getBirth_date()
+    public LocalDate getBirth_date()
     {
         return birth_date;
     }
 
-    public void setBirth_date(Date birth_date)
+    public void setBirth_date(LocalDate birth_date)
     {
         this.birth_date = birth_date;
     }

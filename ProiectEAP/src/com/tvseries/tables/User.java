@@ -1,6 +1,6 @@
 package com.tvseries.tables;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 public class User {
     private int user_id;
@@ -9,13 +9,13 @@ public class User {
     private String password;
     private String first_name;
     private String last_name;
-    private Date birth_date;
+    private LocalDate birth_date;
 
     public User(){
 
     }
 
-    public User(int user_id, String username, String email, String password, String first_name, String last_name, Date birth_date) {
+    public User(int user_id, String username, String email, String password, String first_name, String last_name, LocalDate birth_date) {
         this.user_id = user_id;
         this.username = username;
         this.email = email;
@@ -73,11 +73,11 @@ public class User {
         this.last_name = last_name;
     }
 
-    public Date getBirth_date() {
+    public LocalDate getBirth_date() {
         return birth_date;
     }
 
-    public void setBirth_date(Date birth_date) {
+    public void setBirth_date(LocalDate birth_date) {
         this.birth_date = birth_date;
     }
 }

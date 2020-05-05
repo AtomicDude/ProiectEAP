@@ -4,6 +4,7 @@ import com.tvseries.tables.Season;
 import com.tvseries.utils.C3P0DataSource;
 
 import java.sql.*;
+import java.time.LocalDate;
 
 public class SeasonDAO
 {
@@ -22,7 +23,7 @@ public class SeasonDAO
 
         if(rs.next())
         {
-            Season sz = new Season(season_id, rs.getString("title"), rs.getDate("release_date"), rs.getDate("end_date"), rs.getFloat("avg_score"), rs.getInt("popularity"), rs.getInt("season_no"), rs.getInt("prequel_id"), rs.getInt("sequel_id"), rs.getInt("series_id")); //create a season with the information obtained
+            Season sz = new Season(season_id, rs.getString("title"), rs.getDate("release_date").toLocalDate(), rs.getDate("end_date").toLocalDate(), rs.getFloat("avg_score"), rs.getInt("popularity"), rs.getInt("season_no"), rs.getInt("prequel_id"), rs.getInt("sequel_id"), rs.getInt("series_id")); //create a season with the information obtained
 
             st.close();
             rs.close();
@@ -38,15 +39,15 @@ public class SeasonDAO
         return null;
     }
 
-    static public int addSeason(String title, Date release_date, Date end_date, float avg_score, int popularity, int season_no, int prequel_id, int sequel_id, int series_id) throws Exception
+    static public int addSeason(String title, LocalDate release_date, LocalDate end_date, float avg_score, int popularity, int season_no, int prequel_id, int sequel_id, int series_id) throws Exception
     {
         String query = "insert into t_season values(null,?,?,?,?,?,?,?,?,?)";
 
         Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
         PreparedStatement st = con.prepareStatement(query); //create a statement
         st.setString(1, title);
-        st.setDate(2,release_date);
-        st.setDate(3,end_date);
+        st.setDate(2, Date.valueOf(release_date));
+        st.setDate(3, Date.valueOf(end_date));
         st.setFloat(4, avg_score);
         st.setInt(5, popularity);
         st.setInt(6, season_no);
@@ -62,15 +63,15 @@ public class SeasonDAO
         return rows;
     }
 
-    static public int updateSeason(int season_id, String new_title, Date new_release_date, Date new_end_date, float new_avg_score, int new_popularity, int new_season_no, int new_prequel_id, int new_sequel_id, int new_series_id) throws Exception
+    static public int updateSeason(int season_id, String new_title, LocalDate new_release_date, LocalDate new_end_date, float new_avg_score, int new_popularity, int new_season_no, int new_prequel_id, int new_sequel_id, int new_series_id) throws Exception
     {
         String query = "update t_season set title = ?, release_date = ?, end_date = ?, avg_score = ?, popularity = ?, season_no = ?, prequel_id = ?, sequel_id = ?, series_id = ? where season_id = ?";
 
         Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
         PreparedStatement st = con.prepareStatement(query); //create a statement
         st.setString(1, new_title);
-        st.setDate(2, new_release_date);
-        st.setDate(3, new_end_date);
+        st.setDate(2, Date.valueOf(new_release_date));
+        st.setDate(3, Date.valueOf(new_end_date));
         st.setFloat(4, new_avg_score);
         st.setInt(5, new_popularity);
         st.setInt(6, new_season_no);

@@ -1,12 +1,12 @@
 package com.tvseries.tables;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 public class Season {
     private int season_id;
     private String title;
-    private Date release_date;
-    private Date end_date;
+    private LocalDate release_date;
+    private LocalDate end_date;
     private float avg_score;
     private int popularity;
     private int season_no;
@@ -18,7 +18,7 @@ public class Season {
 
     }
 
-    public Season(int season_id, String title, Date release_date, Date end_date, float avg_score, int popularity, int season_no, int prequel_id, int sequel_id, int series_id) {
+    public Season(int season_id, String title, LocalDate release_date, LocalDate end_date, float avg_score, int popularity, int season_no, int prequel_id, int sequel_id, int series_id) {
         this.season_id = season_id;
         this.title = title;
         this.release_date = release_date;
@@ -47,19 +47,19 @@ public class Season {
         this.title = title;
     }
 
-    public Date getRelease_date() {
+    public LocalDate getRelease_date() {
         return release_date;
     }
 
-    public void setRelease_date(Date release_date) {
+    public void setRelease_date(LocalDate release_date) {
         this.release_date = release_date;
     }
 
-    public Date getEnd_date() {
+    public LocalDate getEnd_date() {
         return end_date;
     }
 
-    public void setEnd_date(Date end_date) {
+    public void setEnd_date(LocalDate end_date) {
         this.end_date = end_date;
     }
 

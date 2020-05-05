@@ -1,0 +1,18 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="tvseries">
+    <output-path>$PROJECT_DIR$/out/artifacts/tvseries</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="com.tvseries" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="c3p0:c3p0:0.9.1.2" />
+          <element id="library" level="project" name="mysql:mysql-connector-java:8.0.19" />
+          <element id="library" level="project" name="commons-codec:commons-codec:1.14" />
+        </element>
+      </element>
+      <element id="javaee-facet-resources" facet="com.tvseries/web/Web" />
+    </root>
+  </artifact>
+</component>

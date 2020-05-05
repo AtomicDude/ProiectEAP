@@ -40,7 +40,7 @@ public class Relationship_StatusDAO
 
     static public int addRelationship_Status(String name) throws Exception
     {
-        String query = "insert into t_genre values(null, ?)";
+        String query = "insert into t_relationship_status values(null, ?)";
 
         Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
         PreparedStatement st = con.prepareStatement(query); //create a statement

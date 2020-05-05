@@ -4,6 +4,7 @@ import com.tvseries.tables.Actor;
 import com.tvseries.utils.C3P0DataSource;
 
 import java.sql.*;
+import java.time.LocalDate;
 
 public class ActorDAO
 {
@@ -21,7 +22,7 @@ public class ActorDAO
         ResultSet rs = st.executeQuery(query); //execute the query using the statement and store the result
 
         if(rs.next()) {
-            Actor ac = new Actor(actor_id, rs.getString("first_name"), rs.getString("last_name"), rs.getDate("birth_date")); //create an actor with the information obtained
+            Actor ac = new Actor(actor_id, rs.getString("first_name"), rs.getString("last_name"), rs.getDate("birth_date").toLocalDate()); //create an actor with the information obtained
 
             st.close();
             rs.close();
@@ -37,7 +38,7 @@ public class ActorDAO
         return null;
     }
 
-    static public int addActor(String first_name, String last_name, Date birth_date) throws Exception
+    static public int addActor(String first_name, String last_name, LocalDate birth_date) throws Exception
     {
         String query = "insert into t_actor values(null, ?, ?, ?)";
 
@@ -45,7 +46,7 @@ public class ActorDAO
         PreparedStatement st = con.prepareStatement(query); //create a statement
         st.setString(1, first_name);
         st.setString(2, last_name);
-        st.setDate(3, birth_date);
+        st.setDate(3, Date.valueOf(birth_date));
         int rows = st.executeUpdate(); //execute the query using the statement and store the result
 
         st.close(); //close the statement
@@ -54,7 +55,7 @@ public class ActorDAO
         return rows; //return the number of rows affected
     }
 
-    static public int updateActor(int actor_id, String new_first_name, String new_last_name, Date new_birth_date) throws Exception
+    static public int updateActor(int actor_id, String new_first_name, String new_last_name, LocalDate new_birth_date) throws Exception
     {
         String query = "update t_actor set first_name = ?, last_name = ?, birth_date = ? where actor_id = ?";
 
@@ -62,7 +63,7 @@ public class ActorDAO
         PreparedStatement st = con.prepareStatement(query); //create a statement
         st.setString(1, new_first_name);
         st.setString(2, new_last_name);
-        st.setDate(3, new_birth_date);
+        st.setDate(3, Date.valueOf(new_birth_date));
         st.setInt(4, actor_id);
 
         int rows = st.executeUpdate(); //execute the query using the statement and store the result
