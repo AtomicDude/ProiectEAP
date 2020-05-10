@@ -1,0 +1,51 @@
+/* Drop down menu */
+.ddown
+{
+    display: none;
+    position: absolute;
+    top: 100%;
+    left:0%;
+    z-index: 1;
+    padding: 0px;
+    margin: 0px;
+    border: none;
+    outline: 0px;
+    cursor: inherit;
+    font: inherit;
+    text-decoration: inherit;
+    text-align: inherit;
+    background-color: inherit;
+    color: inherit;
+}
+
+.hcell:hover .ddown
+{
+    display: flex;
+    flex-direction: column;
+}
+
+.hcell:hover .ddown > *
+{
+    padding: 10px 20px;
+    margin: 0px;
+    border: none;
+    outline: 0px;
+    cursor: inherit;
+    text-decoration: inherit;
+    text-align: inherit;
+    font: inherit;
+    background-color: inherit;
+    color: inherit;
+}
+
+.hcell:hover .ddown > *:hover, .hcell:hover .ddown *:focus
+{
+    background-color: gray;
+    color: black;
+}
+
+.hcell:hover .ddown > *:active/*, .hcell:hover .ddown > .ddownactive*/
+{
+    background-color: firebrick;
+    color: black;
+}

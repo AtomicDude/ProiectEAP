@@ -1,17 +1,17 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: Joe
-  Date: 05/05/2020
-  Time: 14:39
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
 <html>
     <head>
+        <link rel = "stylesheet" type = "text/css" href = "styles/general_style.css">
+        <link rel = "stylesheet" type = "text/css" href = "styles/hnavbar_style.css">
+        <link rel = "stylesheet" type = "text/css" href = "styles/list_style.css">
+        <link rel = "stylesheet" type = "text/css" href = "styles/dropdown_style.css">
         <title>Register</title>
     </head>
     <body>
-    <h1>Create an account</h1><br>
+        <jsp:include page = "home/header.jsp"></jsp:include>
+        <jsp:include page = "home/hnavbar.jsp"></jsp:include>
+
         <form action = "register" method = "post">
             <table>
                 <!-- First name -->
@@ -37,6 +37,11 @@
                 <!-- Username -->
                 <tr>
                     <td><input type = "text" id = "username" name = "username" placeholder = "Username" maxlength = "25"></td>
+                </tr>
+
+                <!-- Display name -->
+                <tr>
+                    <td><input type = "text" id = "display_name" name = "display_name" placeholder = "Display name" maxlength = "25"></td>
                 </tr>
 
                 <!-- Password -->

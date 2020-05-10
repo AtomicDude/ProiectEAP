@@ -1,10 +1,13 @@
 package com.tvseries.dao;
 
+import com.tvseries.tables.Season;
+import com.tvseries.tables.SeasonListItem;
 import com.tvseries.tables.Seasons_List;
 import com.tvseries.utils.C3P0DataSource;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class Seasons_ListDAO
 {
@@ -13,30 +16,32 @@ public class Seasons_ListDAO
 
     }
 
-   static public Seasons_List getSeasons_List(int season_id, int user_id) throws Exception //TODO: return a list of the seasons
+   static public ArrayList<SeasonListItem> getSeasonList(String username, String status) throws Exception
    {
-        String query = "select * from t_seasons_list where season_id = " + season_id + "and user_id = " + user_id;
+        String query = "select username, season_id, title, season_no, current_ep, score, w.name " +
+                       "from t_user join t_seasons_list using(user_id) " +
+                       "join t_season using(season_id) " +
+                       "join t_watch_status w using(status_id) " +
+                       "where username = " + "\"" + username + "\" " + "and w.name = " + "\"" + status + "\"";
 
         Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
         Statement st = con.createStatement(); //create a statement
         ResultSet rs = st.executeQuery(query); //execute the query using the statement and store the result
 
-        if(rs.next())
+        ArrayList<SeasonListItem> seasons = new ArrayList<SeasonListItem>();
+
+        while(rs.next())
         {
-            Seasons_List sl = new Seasons_List(season_id, user_id, rs.getDate("start_date").toLocalDate(), rs.getDate("end_date").toLocalDate(), rs.getInt("current_ep"), rs.getInt("status_id")); //create an actor with the information obtained
+            SeasonListItem s = new SeasonListItem(rs.getInt("season_id"), rs.getString("title"), rs.getInt("season_no"), rs.getInt("current_ep"), rs.getInt("score"), rs.getString("w.name"));
 
-            st.close();
-            rs.close();
-            con.close();
-
-            return sl;
+            seasons.add(s);
         }
 
         st.close();
         rs.close();
         con.close();
 
-        return null;
+        return seasons;
     }
 
     static public int addSeasons_List(int season_id, int user_id, LocalDate start_date, LocalDate end_date, int current_ep, int status_id ) throws Exception

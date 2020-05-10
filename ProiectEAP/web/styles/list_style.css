@@ -1,0 +1,28 @@
+.lbody
+{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    flex-basis: 100%;
+    background-color: black;
+}
+
+.lbody > .lrow
+{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    flex-basis: 100%;
+    margin: 2px;
+    padding: 10px;
+    background-color: gray;
+}
+
+.lrow > .litem
+{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    background-color: inherit;
+    margin: auto;
+}

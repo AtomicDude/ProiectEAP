@@ -5,6 +5,7 @@ import java.time.LocalDate;
 public class User {
     private int user_id;
     private String username;
+    private String display_name;
     private String email;
     private String password;
     private String first_name;
@@ -39,6 +40,14 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getDisplay_name() {
+        return display_name;
+    }
+
+    public void setDisplay_name(String display_name) {
+        this.display_name = display_name;
     }
 
     public String getEmail() {

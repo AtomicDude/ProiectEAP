@@ -70,4 +70,6 @@ public class Seasons_List {
     public void setStatus_id(int status_id) {
         this.status_id = status_id;
     }
+
+
 }

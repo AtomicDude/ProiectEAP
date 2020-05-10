@@ -64,18 +64,19 @@ public class UserDAO
         return null;
     }
 
-    static public int addUser(String username, String email, String password, String first_name, String last_name, LocalDate birth_date) throws Exception
+    static public int addUser(String username, String display_name, String email, String password, String first_name, String last_name, LocalDate birth_date) throws Exception
     {
-        String query = "insert into t_user values(null, ?, ?, ?, ?, ?, ?)";
+        String query = "insert into t_user values(null, ?, ?, ?, ?, ?, ?, ?)";
 
         Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
         PreparedStatement st = con.prepareStatement(query); //create a statement
         st.setString(1, username);
-        st.setString(2, email);
-        st.setString(3, password);
-        st.setString(4, first_name);
-        st.setString(5, last_name);
-        st.setDate(6, Date.valueOf(birth_date));
+        st.setString(2, display_name);
+        st.setString(3, email);
+        st.setString(4, password);
+        st.setString(5, first_name);
+        st.setString(6, last_name);
+        st.setDate(7, Date.valueOf(birth_date));
 
         int rows = st.executeUpdate();
 
