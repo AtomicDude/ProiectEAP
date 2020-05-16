@@ -16,12 +16,12 @@
             <table>
                 <!-- Username -->
                 <tr>
-                    <td><input type = "text" id = "username" name = "username" placeholder = "Username"></td>
+                    <td><input type = "text" id = "username" name = "username" placeholder = "Username" autocomplete = "off"></td>
                 </tr>
 
                 <!-- Password -->
                 <tr>
-                    <td><input type = "password" id = "password" name = "password" placeholder = "Password"></td>
+                    <td><input type = "password" id = "password" name = "password" placeholder = "Password" autocomplete = "off"></td>
                 </tr>
 
                 <!-- Login button -->

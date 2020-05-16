@@ -15,7 +15,7 @@ public class LoggingServlet extends HttpServlet
     public boolean validateCredentials(String user, String pass) throws Exception
     {
         String hashpass = DigestUtils.sha256Hex(pass);
-        String db_hashpass = UserDAO.getPassword(user);
+        String db_hashpass = (String)UserDAO.getAttribute(user, "password");
 
         return hashpass.equals(db_hashpass);
     }
@@ -30,7 +30,9 @@ public class LoggingServlet extends HttpServlet
         {
             if(username != null) //logout
             {
-                session.setAttribute("username", null);
+                session.removeAttribute("username");
+                session.removeAttribute("display_name");
+                session.removeAttribute("picture_path");
                 res.sendRedirect(req.getContextPath() + "/index.jsp");
             }
             else //login
@@ -41,6 +43,8 @@ public class LoggingServlet extends HttpServlet
                 if (validateCredentials(user, pass))
                 {
                     session.setAttribute("username", user);
+                    session.setAttribute("display_name", UserDAO.getAttribute(user, "display_name"));
+                    session.setAttribute("picture_path", UserDAO.getAttribute(user, "picture_path"));
                     res.sendRedirect(req.getContextPath() + "/index.jsp");
                 }
                 else //invalid credentials

@@ -18,13 +18,19 @@
     color: inherit;
 }
 
-.hcell:hover .ddown
+.hcell_nohov > .ddown
 {
     display: flex;
     flex-direction: column;
 }
 
-.hcell:hover .ddown > *
+.hcell:hover .ddown, .searchbar:focus + .ddown
+{
+    display: flex;
+    flex-direction: column;
+}
+
+.hcell:hover .ddown > :not(.searchbar), .searchbar:focus + .ddown > *
 {
     padding: 10px 20px;
     margin: 0px;
@@ -38,14 +44,15 @@
     color: inherit;
 }
 
-.hcell:hover .ddown > *:hover, .hcell:hover .ddown *:focus
+.hcell:hover .ddown > :not(.searchbar):hover, .hcell:hover .ddown :not(.searchbar):focus, .searchbar:focus + .ddown > *:hover, .searchbar:focus + .ddown > *:focus
 {
     background-color: gray;
     color: black;
 }
 
-.hcell:hover .ddown > *:active/*, .hcell:hover .ddown > .ddownactive*/
+.hcell:hover .ddown > :not(.searchbar):active, .searchbar + .ddown > *:active
 {
     background-color: firebrick;
     color: black;
 }
+

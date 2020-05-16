@@ -22,12 +22,12 @@ public class RegisterServlet extends HttpServlet
     //TODO: validate email, check if username/email is unique
     public boolean validatePassword(String pass, String cpass)
     {
-        return (pass != null && pass.length() >= 12 && pass.length() <= 40 && pass.equals(cpass) && PasswordChecker.check(pass));
+        return (pass != null && pass.length() >= 10 && pass.length() <= 40 && pass.equals(cpass) && PasswordChecker.check(pass));
     }
 
     public boolean validateName(String name)
     {
-        return (name != null && name.length() >= 8 && name.length() <= 30 && PasswordChecker.check(name));
+        return (name != null && name.length() >= 4 && name.length() <= 30 && PasswordChecker.check(name));
     }
 
     public boolean validateEmail(String email)
@@ -74,8 +74,8 @@ public class RegisterServlet extends HttpServlet
         String username = req.getParameter("username");
         String display_name = req.getParameter("display_name");
         String email = req.getParameter("email");
-        String password = req.getParameter("password");
-        String cpassword = req.getParameter("cpassword");
+        String password = req.getParameter("pass");
+        String cpassword = req.getParameter("cpass");
         String fname = req.getParameter("fname");
         String lname = req.getParameter("lname");
         String bdates = req.getParameter("bdate");
@@ -99,6 +99,7 @@ public class RegisterServlet extends HttpServlet
             {
                 int lines = UserDAO.addUser(username, display_name, email, hashpass, fname, lname, bdate);
                 session.setAttribute("username", username);
+                session.setAttribute("display_name", display_name);
                 res.sendRedirect(req.getContextPath() + "/index.jsp");
 
             } catch (Exception e)

@@ -1,3 +1,4 @@
+<%@ page import="com.tvseries.dao.UserDAO" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
@@ -11,5 +12,8 @@
     <body>
         <jsp:include page = "../home/header.jsp"></jsp:include>
         <jsp:include page = "../home/hnavbar.jsp"></jsp:include>
+
+        <img src = "<%= request.getContextPath() + (String)session.getAttribute("picture_path")%>" alt = "profile picture" width = "400" height = "400">
+
     </body>
 </html>

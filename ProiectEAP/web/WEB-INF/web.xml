@@ -43,6 +43,29 @@
         <url-pattern>/restricted/list</url-pattern>
     </servlet-mapping>
 
+    <!-- File upload servlet -->
+    <servlet>
+        <servlet-name>file_upload</servlet-name>
+        <servlet-class>com.tvseries.servlets.FileUploadServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>file_upload</servlet-name>
+        <url-pattern>/upload</url-pattern>
+    </servlet-mapping>
+
+    <!-- Image fetch servlet -->
+    <servlet>
+        <servlet-name>image_fetch</servlet-name>
+        <servlet-class>com.tvseries.servlets.ImageFetchServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>image_fetch</servlet-name>
+        <url-pattern>/data/images/profile_pictures/*</url-pattern>
+        <url-pattern>/data/images/posters/*</url-pattern>
+    </servlet-mapping>
+
     <!-- Logging filter -->
     <filter>
         <filter-name>logging_filter</filter-name>
@@ -64,4 +87,25 @@
         <location>/pages/error.jsp</location>
     </error-page>
     -->
+
+    <!-- Context parameters -->
+    <context-param>
+        <param-name>data_root</param-name>
+        <param-value>C:</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>profile_pictures_path</param-name>
+        <param-value>C:\data\images\profile_pictures\</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>profile_pictures_relative</param-name>
+        <param-value>\data\images\profile_pictures\</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>temp_path</param-name>
+        <param-value>C:\data\temp\</param-value>
+    </context-param>
 </web-app>

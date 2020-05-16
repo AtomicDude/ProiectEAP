@@ -11,14 +11,14 @@ public class PasswordChecker
 
     private static boolean isDigit(char ch)
     {
-        return (ch >= '0' && ch <= '8');
+        return (ch >= '0' && ch <= '9');
     }
 
     private static boolean isSpecial(char ch)
     {
-        String special = "~`!@#$%^&*()-_+=[]{};:'<>/?|";
+        String special = "~`!@#$%^&*()-_+=[]{};:'<>/?|.";
 
-        return (special.indexOf(ch) != -1); //indexOf(ch) returns -1 if the ch is not present in the string
+        return (special.indexOf(ch) >= 0); //indexOf(ch) returns -1 if the ch is not present in the string
     }
 
     public static boolean onlyDigits(String password)
@@ -26,7 +26,7 @@ public class PasswordChecker
         int i;
         for(i = 0; i < password.length(); i++)
         {
-            if(!isDigit(password.charAt(i)))
+            if(isDigit(password.charAt(i)))
             {
                 return false;
             }
@@ -40,7 +40,7 @@ public class PasswordChecker
         int i;
         for(i = 0; i < password.length(); i++)
         {
-            if(!isLetter(password.charAt(i)))
+            if(isLetter(password.charAt(i)))
             {
                 return false;
             }
@@ -54,7 +54,7 @@ public class PasswordChecker
         int i;
         for(i = 0; i < password.length(); i++)
         {
-            if(!(isDigit(password.charAt(i)) || isLetter(password.charAt(i))))
+            if(isDigit(password.charAt(i)) && isLetter(password.charAt(i)))
             {
                 return false;
             }
@@ -68,7 +68,7 @@ public class PasswordChecker
         int i;
         for(i = 0; i < password.length(); i++)
         {
-            if(!(isDigit(password.charAt(i)) || isLetter(password.charAt(i)) || isSpecial(password.charAt(i))))
+            if(isDigit(password.charAt(i)) && isLetter(password.charAt(i)) && !isSpecial(password.charAt(i)))
             {
                 return false;
             }

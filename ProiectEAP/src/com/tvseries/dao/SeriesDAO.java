@@ -1,9 +1,11 @@
 package com.tvseries.dao;
 
+import com.tvseries.tables.SeasonListItem;
 import com.tvseries.tables.Series;
 import com.tvseries.utils.C3P0DataSource;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class SeriesDAO
 {
@@ -36,6 +38,35 @@ public class SeriesDAO
         con.close();
 
         return null;
+    }
+
+    public static ArrayList<Series> searchSeries(String search_key) throws Exception
+    {
+        if(search_key == null || search_key == "")
+        {
+            return null;
+        }
+
+        String query = "select * from t_series where lower(title) like \'%" + search_key + "%\'";
+
+        Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
+        Statement st = con.createStatement(); //create a statement
+        ResultSet rs = st.executeQuery(query); //execute the query using the statement and store the result
+
+        ArrayList<Series> series = new ArrayList<Series>();
+
+        while(rs.next())
+        {
+            Series s = new Series(rs.getInt("series_id"), rs.getString("title"), rs.getInt("rating_id"));
+
+            series.add(s);
+        }
+
+        st.close();
+        rs.close();
+        con.close();
+
+        return series;
     }
 
     static public int addSeries(String title, int rating_id) throws Exception

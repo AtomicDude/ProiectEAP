@@ -10,15 +10,17 @@ public class Test
 {
     public static void main(String[] args) throws Exception
     {
-        boolean value = PasswordChecker.check("asdf1234!@#$%^&*");
+        String name = "`~!@#$%^&*()_-.,/<>?;:'[{}]|";
+        System.out.println(name);
+        boolean value = (name != null && (name.length() >= 4 && name.length() <= 30) && PasswordChecker.check(name));
 
         if(value)
         {
-            System.out.println("True");
+            System.out.println("Valid");
         }
         else
         {
-            System.out.println("False");
+            System.out.println("Invalid");
         }
     }
 }

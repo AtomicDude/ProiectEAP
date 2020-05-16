@@ -13,9 +13,9 @@ public class UserDAO
 
     }
 
-    static public User getUser(int user_id) throws Exception
+    static public User getUser(int username) throws Exception
     {
-        String query = "select * from t_user where user_id = " + user_id;
+        String query = "select * from t_user where username = " + "\"" + username + "\"";
 
         Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
         Statement st = con.createStatement(); //create a statement
@@ -23,7 +23,7 @@ public class UserDAO
 
         if(rs.next())
         {
-            User usr = new User(user_id, rs.getString("username"), rs.getString("email"), rs.getString("password"), rs.getString("first_name"),rs.getString("last_name"),rs.getDate("birth_date").toLocalDate()); //create an actor with the information obtained
+            User usr = new User(rs.getInt("user_id"), rs.getString("username"), rs.getString("email"), rs.getString("password"), rs.getString("first_name"),rs.getString("last_name"),rs.getDate("birth_date").toLocalDate()); //create an actor with the information obtained
 
             st.close();
             rs.close();
@@ -39,9 +39,9 @@ public class UserDAO
         return null;
     }
 
-    static public String getPassword(String uname) throws Exception
+    public static Object getAttribute(String username, String attribute_name) throws Exception
     {
-        String query = "select password from t_user where username = \"" + uname + "\"";
+        String query = "select " + attribute_name + " from t_user where username = \"" + username + "\"";
 
         Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
         Statement st = con.createStatement(); //create a statement
@@ -49,12 +49,12 @@ public class UserDAO
 
         if(rs.next())
         {
-            String pass = rs.getString("password");
+            Object attribute = rs.getObject(attribute_name);
             st.close();
             rs.close();
             con.close();
 
-            return pass;
+            return attribute;
         }
 
         st.close();
@@ -64,9 +64,27 @@ public class UserDAO
         return null;
     }
 
+    public static boolean setString(String username, String attribute_name, String value) throws Exception
+    {
+        String query = "update t_user set " + attribute_name + " = ? where username = ?";
+
+        Connection con = C3P0DataSource.getInstance().getConnection();
+        PreparedStatement st = con.prepareStatement(query);
+
+        st.setString(1, value);
+        st.setString(2, username);
+
+        int rows = st.executeUpdate();
+
+        st.close();
+        con.close();
+
+        return (rows > 0);
+    }
+
     static public int addUser(String username, String display_name, String email, String password, String first_name, String last_name, LocalDate birth_date) throws Exception
     {
-        String query = "insert into t_user values(null, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "insert into t_user(user_id, username, display_name, email, password, first_name, last_name, birth_date) values(null, ?, ?, ?, ?, ?, ?, ?)";
 
         Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
         PreparedStatement st = con.prepareStatement(query); //create a statement
