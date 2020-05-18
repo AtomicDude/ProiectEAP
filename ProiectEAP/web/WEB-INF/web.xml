@@ -51,7 +51,9 @@
 
     <servlet-mapping>
         <servlet-name>file_upload</servlet-name>
-        <url-pattern>/upload</url-pattern>
+        <url-pattern>/uploadprofile_picture</url-pattern>
+        <url-pattern>/administrative/upload_season</url-pattern>
+        <url-pattern>/administrative/upload_series</url-pattern>
     </servlet-mapping>
 
     <!-- Image fetch servlet -->
@@ -66,6 +68,20 @@
         <url-pattern>/data/images/posters/*</url-pattern>
     </servlet-mapping>
 
+    <!-- Display info servlet -->
+    <servlet>
+        <servlet-name>display_info</servlet-name>
+        <servlet-class>com.tvseries.servlets.DisplayInfoServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>display_info</servlet-name>
+        <url-pattern>/season_info</url-pattern>
+        <url-pattern>/series_info</url-pattern>
+        <url-pattern>/episode_info</url-pattern>
+        <url-pattern>/user_info</url-pattern>
+    </servlet-mapping>
+
     <!-- Logging filter -->
     <filter>
         <filter-name>logging_filter</filter-name>
@@ -75,7 +91,31 @@
     <filter-mapping>
         <filter-name>logging_filter</filter-name>
         <url-pattern>/restricted/*</url-pattern>
+        <url-pattern>/update_list/*</url-pattern>
     </filter-mapping>
+
+    <!-- Admin filter -->
+    <filter>
+        <filter-name>admin_filter</filter-name>
+        <filter-class>com.tvseries.filters.AdminFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>admin_filter</filter-name>
+        <url-pattern>/administrative/*</url-pattern>
+    </filter-mapping>
+
+    <!-- Prohibited filter -->
+    <filter>
+        <filter-name>prohibited_filter</filter-name>
+        <filter-class>com.tvseries.filters.ProhibitedFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>prohibited_filter</filter-name>
+        <url-pattern>/WEB-INF/*</url-pattern>
+    </filter-mapping>
+
     <!-- Error handling -->
     <!--
     <error-page>
@@ -102,6 +142,16 @@
     <context-param>
         <param-name>profile_pictures_relative</param-name>
         <param-value>\data\images\profile_pictures\</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>posters_path</param-name>
+        <param-value>C:\data\images\posters\</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>posters_relative</param-name>
+        <param-value>\data\images\posters\</param-value>
     </context-param>
 
     <context-param>

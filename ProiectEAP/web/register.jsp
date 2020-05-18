@@ -6,7 +6,6 @@
     <head>
         <link rel = "stylesheet" type = "text/css" href = "styles/general_style.css">
         <link rel = "stylesheet" type = "text/css" href = "styles/hnavbar_style.css">
-        <link rel = "stylesheet" type = "text/css" href = "styles/list_style.css">
         <link rel = "stylesheet" type = "text/css" href = "styles/dropdown_style.css">
         <title>Register</title>
     </head>

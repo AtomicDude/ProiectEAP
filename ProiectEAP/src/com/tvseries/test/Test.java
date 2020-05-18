@@ -1,26 +1,23 @@
 package com.tvseries.test;
 
+import com.tvseries.containers.SeasonInfoContainer;
 import com.tvseries.dao.*;
+import com.tvseries.utils.C3P0DataSource;
 import com.tvseries.utils.PasswordChecker;
+import javafx.util.Pair;
 
+import java.io.File;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Test
 {
     public static void main(String[] args) throws Exception
     {
-        String name = "`~!@#$%^&*()_-.,/<>?;:'[{}]|";
-        System.out.println(name);
-        boolean value = (name != null && (name.length() >= 4 && name.length() <= 30) && PasswordChecker.check(name));
 
-        if(value)
-        {
-            System.out.println("Valid");
-        }
-        else
-        {
-            System.out.println("Invalid");
-        }
     }
 }

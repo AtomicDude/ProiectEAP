@@ -1,20 +1,21 @@
 package com.tvseries.servlets;
 
-import com.tvseries.dao.UserDAO;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.time.format.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import com.tvseries.dao.UserInfoDAO;
 import com.tvseries.utils.PasswordChecker;
+import javafx.util.Pair;
 import org.apache.commons.codec.digest.DigestUtils;
 
 public class RegisterServlet extends HttpServlet
@@ -80,6 +81,7 @@ public class RegisterServlet extends HttpServlet
         String lname = req.getParameter("lname");
         String bdates = req.getParameter("bdate");
 
+
         if(bdates == null || bdates.equals(""))
         {
             bdates = "1900-01-01";
@@ -95,14 +97,24 @@ public class RegisterServlet extends HttpServlet
         {
             String hashpass = processPassword(password);
 
+            List<Pair<String, Object>> attributes = new ArrayList<>();
+            attributes.add(new Pair<>("username", req.getParameter("username")));
+            attributes.add(new Pair<>("password", hashpass));
+            attributes.add(new Pair<>("display_name", req.getParameter("display_name")));
+            attributes.add(new Pair<>("email", req.getParameter("email")));
+            attributes.add(new Pair<>("first_name", req.getParameter("fname")));
+            attributes.add(new Pair<>("last_name", req.getParameter("lname")));
+            attributes.add(new Pair<>("birth_date", bdate));
+
             try
             {
-                int lines = UserDAO.addUser(username, display_name, email, hashpass, fname, lname, bdate);
+
+                boolean updated = UserInfoDAO.addUser(attributes);
                 session.setAttribute("username", username);
                 session.setAttribute("display_name", display_name);
                 res.sendRedirect(req.getContextPath() + "/index.jsp");
-
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 e.printStackTrace();
             }

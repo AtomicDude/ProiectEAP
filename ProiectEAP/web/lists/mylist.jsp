@@ -1,4 +1,4 @@
-<%@ page import="com.tvseries.tables.SeasonListItem" %>
+<%@ page import="com.tvseries.tables.ListItem" %>
 <%@ page import="java.util.ArrayList" %>
 <!-- A list displayed in the main section of the list.jsp -->
 
@@ -11,14 +11,14 @@
         <th>Score</th>
     </tr>
     <%
-        ArrayList<SeasonListItem> seasons = (ArrayList<SeasonListItem>)request.getAttribute("list");
+        ArrayList<ListItem> seasons = (ArrayList<ListItem>)request.getAttribute("list");
 
         if(seasons.size() > 0)
         {
     %>
     <%
             int index = 1;
-            for(SeasonListItem s : seasons)
+            for(ListItem s : seasons)
             {
     %>
                 <tr>
