@@ -26,7 +26,7 @@ public class PasswordChecker
         int i;
         for(i = 0; i < password.length(); i++)
         {
-            if(isDigit(password.charAt(i)))
+            if(!isDigit(password.charAt(i)))
             {
                 return false;
             }
@@ -40,7 +40,7 @@ public class PasswordChecker
         int i;
         for(i = 0; i < password.length(); i++)
         {
-            if(isLetter(password.charAt(i)))
+            if(!isLetter(password.charAt(i)))
             {
                 return false;
             }
@@ -54,7 +54,7 @@ public class PasswordChecker
         int i;
         for(i = 0; i < password.length(); i++)
         {
-            if(isDigit(password.charAt(i)) && isLetter(password.charAt(i)))
+            if(!isDigit(password.charAt(i)) && !isLetter(password.charAt(i)))
             {
                 return false;
             }
@@ -68,7 +68,7 @@ public class PasswordChecker
         int i;
         for(i = 0; i < password.length(); i++)
         {
-            if(isDigit(password.charAt(i)) && isLetter(password.charAt(i)) && !isSpecial(password.charAt(i)))
+            if(!isDigit(password.charAt(i)) && !isLetter(password.charAt(i)) && !isSpecial(password.charAt(i)))
             {
                 return false;
             }

@@ -18,6 +18,13 @@
     watch_status.add("Dropped");
     watch_status.add("Plan to watch");
     watch_status.remove(season_info.getWatch_status()); //remove the watch status of the user
+
+    List<Integer> scores = new ArrayList<>();
+    for(int i = 1; i <= 10; i++)
+    {
+        scores.add(i);
+    }
+    scores.remove(season_info.getScore());
 %>
 
 <!DOCTYPE html>
@@ -37,6 +44,10 @@
         <p>Season number: <%=season_info.getSeason_no()%></p><br>
 
         <form method = "post" action = "update_list">
+            <!-- additional parameters for updates on the list -->
+            <input type = "hidden" name = "season_id" value = "<%=season_info.getSeason_id()%>">
+            <input type = "hidden" name = "current_watch_status" value = "<%=season_info.getWatch_status()%>">
+
             <label>
                 Status:
                 <select name = "watch_status">
@@ -55,6 +66,21 @@
             <label>
                 Current ep:
                 <input type = "number" name = "current_ep" value = "<%=season_info.getCurrent_ep() == null ? 0 : season_info.getCurrent_ep()%>" maxlength = "3">
+            </label>
+
+            <label>
+                Score:
+                <select name = "score">
+                    <option value = "<%=season_info.getScore()%>" selected><%=season_info.getScore() == null ? 0 : season_info.getScore()%></option>
+                    <%
+                        for(Integer score : scores)
+                        {
+                    %>
+                    <option value = "<%=score.intValue()%>"><%=score.intValue()%></option>
+                    <%
+                        }
+                    %>
+                </select>
             </label>
 
             <input type = "submit" value = "Update">

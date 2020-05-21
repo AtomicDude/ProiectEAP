@@ -1,6 +1,6 @@
 package com.tvseries.dao;
 
-import com.tvseries.containers.SeasonListContainer;
+import com.tvseries.containers.SeasonsListContainer;
 import com.tvseries.containers.UserInfoContainer;
 import com.tvseries.utils.C3P0DataSource;
 import com.tvseries.utils.Triplet;
@@ -81,16 +81,16 @@ public class UserInfoDAO
         return user_info;
     }
 
-    public static List<SeasonListContainer> getUserList(String username, String watch_status) throws Exception
+    public static List<SeasonsListContainer> getUserList(String username, String watch_status) throws Exception
     {
         Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
         String query;
         PreparedStatement st;
         ResultSet rs;
-        List<SeasonListContainer> season_list = new ArrayList<>();
+        List<SeasonsListContainer> season_list = new ArrayList<>();
 
         //build query
-        query = "select season_id, season_title, my_start, my_end, watch_status, current_ep, season_poster " +
+        query = "select season_id, season_title, my_start, my_end, current_ep, score, season_poster " +
                 "from t_seasons_list join t_season using(season_id) " +
                 "where username <=> ? and watch_status <=> ?;";
 
@@ -104,11 +104,11 @@ public class UserInfoDAO
 
         while(rs.next())
         {
-            SeasonListContainer season = new SeasonListContainer();
+            SeasonsListContainer season = new SeasonsListContainer();
             season.setSeason_id(rs.getObject("season_id", Integer.class));
             season.setSeason_title(rs.getObject("season_title", String.class));
             season.setSeason_poster(rs.getObject("season_poster", String.class));
-            season.setWatch_status(rs.getObject("watch_status", String.class));
+            season.setScore(rs.getObject("score", Integer.class));
             season.setCurrent_ep(rs.getObject("current_ep", Integer.class));
             season.setMy_start(rs.getObject("my_start", LocalDate.class));
             season.setMy_end(rs.getObject("my_end", LocalDate.class));
@@ -163,7 +163,7 @@ public class UserInfoDAO
         return attribute;
     }
 
-    public static boolean exists(String username) throws Exception
+    public static boolean existsUser(String username) throws Exception
     {
         Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
         String query;
@@ -242,6 +242,7 @@ public class UserInfoDAO
         String column_name = attributes.get(0).getKey();
         if(!white_list.contains(column_name))
         {
+            System.out.println("Not in whitelist:" + column_name);
             return false;
         }
 
@@ -254,7 +255,7 @@ public class UserInfoDAO
             columns = String.format(columns, column_name);
             if(!white_list.contains(column_name))
             {
-                System.out.println(column_name);
+                System.out.println("Not in whitelist:" + column_name);
                 return false;
             }
 
@@ -262,7 +263,6 @@ public class UserInfoDAO
         }
         query = "insert into t_user(" + columns + ") values(" + values + ");";
 
-        System.out.println(query);
         //prepare
         st = con.prepareStatement(query);
 
@@ -280,5 +280,72 @@ public class UserInfoDAO
         con.close();
 
         return inserted;
+    }
+
+    public static boolean alreadyInList(String username, Integer season_id) throws Exception
+    {
+        Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
+        String query;
+        PreparedStatement st;
+        ResultSet rs;
+
+        //build query
+        query = "select season_id from t_seasons_list where username <=> ? and season_id <=> ?;";
+
+        //prepare
+        st = con.prepareStatement(query);
+        //set parameters
+        st.setObject(1, username);
+        st.setObject(2, season_id);
+        //execute
+        rs = st.executeQuery();
+
+        //process results
+        boolean in_list = rs.next();
+
+        //clean
+        st.close();
+        rs.close();
+        con.close();
+
+        return in_list;
+    }
+
+    public static boolean updateSeasonsList(Integer season_id, String username, LocalDate my_start, LocalDate my_end, Integer score, Integer current_ep, String watch_status) throws Exception
+    {
+        Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
+        String query;
+        PreparedStatement st;
+
+        //build query
+        query = "insert into t_seasons_list(season_id, username, my_start, my_end, score, current_ep, watch_status) " +
+                "values(?, ?, ?, ?, ?, ?, ?) " +
+                "on duplicate key update my_start = ?, my_end = ?, score = ?, current_ep = ?, watch_status = ?;";
+
+        //prepare
+        st = con.prepareStatement(query);
+
+        //set parameters
+        st.setObject(1, season_id);
+        st.setObject(2, username);
+        st.setObject(3, my_start);
+        st.setObject(4, my_end);
+        st.setObject(5, score);
+        st.setObject(6, current_ep);
+        st.setObject(7, watch_status);
+        st.setObject(8, my_start);
+        st.setObject(9, my_end);
+        st.setObject(10, score);
+        st.setObject(11, current_ep);
+        st.setObject(12, watch_status);
+
+        //execute
+        boolean updated = st.executeUpdate() > 0;
+
+        //clean
+        st.close();
+        con.close();
+
+        return updated;
     }
 }

@@ -1,10 +1,13 @@
 package com.tvseries.test;
 
+import com.tvseries.containers.SearchListContainer;
 import com.tvseries.containers.SeasonInfoContainer;
 import com.tvseries.dao.*;
 import com.tvseries.utils.C3P0DataSource;
 import com.tvseries.utils.PasswordChecker;
+import com.tvseries.utils.Triplet;
 import javafx.util.Pair;
+import org.apache.commons.validator.GenericValidator;
 
 import java.io.File;
 import java.sql.Connection;

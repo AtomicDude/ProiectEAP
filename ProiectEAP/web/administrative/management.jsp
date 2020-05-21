@@ -5,9 +5,9 @@
 </head>
 <body>
     <h1>Add series</h1>
-    <form method = "post" action = "${pageContext.request.contextPath}/administrative/upload_series" enctype = "multipart/form-data">
+    <form method = "post" action = "<%=request.getContextPath()%>/administrative/upload_series" enctype = "multipart/form-data">
         <label>Title:
-            <input type = "text" name = "title"><br>
+            <input type = "text" name = "series_title"><br>
         </label>
 
         <label>Rating:
@@ -15,16 +15,16 @@
         </label>
 
         <label>Poster:
-            <input type = "file" name = "poster" accept="image/*"><br>
+            <input type = "file" name = "series_poster" accept="image/*"><br>
         </label>
 
-        <input type = "submit" name = "submit" value = "Submit"><br>
+        <input type = "submit" value = "Submit"><br>
     </form>
 
     <h1>Add season</h1>
-    <form method = "post" action = "${pageContext.request.contextPath}/administrative/upload_season" enctype = "multipart/form-data">
+    <form method = "post" action = "<%=request.getContextPath()%>/administrative/upload_season" enctype = "multipart/form-data">
         <label>Title:
-            <input type = "text" name = "title"><br>
+            <input type = "text" name = "season_title"><br>
         </label>
 
         <label>Release date:
@@ -39,23 +39,23 @@
             <input type = "number" name = "season_no"><br>
         </label>
 
-        <label>Prequel title:
-            <input type = "text" name = "prequel_title"><br>
+        <label>Prequel id:
+            <input type = "number" name = "prequel_id"><br>
         </label>
 
-        <label>Sequel title:
-            <input type = "text" name = "sequel_title"><br>
+        <label>Sequel id:
+            <input type = "number" name = "sequel_id"><br>
         </label>
 
-        <label>Series title:
-            <input type = "text" name = "series_title"><br>
+        <label>Series id:
+            <input type = "number" name = "series_id"><br>
         </label>
 
         <label>Poster:
             <input type = "file" name = "poster" accept = "image/*"><br>
         </label>
 
-        <input type = "submit" name = "submit" value = "Submit"><br>
+        <input type = "submit" value = "Submit"><br>
     </form>
 
 </body>

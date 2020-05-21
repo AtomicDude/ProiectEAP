@@ -3,6 +3,7 @@ package com.tvseries.dao;
 import com.tvseries.containers.SeriesInfoContainer;
 import com.tvseries.utils.C3P0DataSource;
 import com.tvseries.utils.Triplet;
+import javafx.util.Pair;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -104,7 +105,7 @@ public class SeriesInfoDAO
         return series_info;
     }
 
-    public static boolean exists(Integer series_id) throws Exception
+    public static boolean existsSeries(Integer series_id) throws Exception
     {
         Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
         String query;
@@ -163,5 +164,63 @@ public class SeriesInfoDAO
         con.close();
 
         return updated;
+    }
+
+    public static boolean addSeries(List<Pair<String, Object>> attributes) throws Exception
+    {
+        int attributes_no = attributes.size();
+
+        if(attributes_no < 1)
+        {
+            return false;
+        }
+
+        Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
+        String query;
+        PreparedStatement st;
+
+        //build query
+        String columns = "%s";
+        String column_name = attributes.get(0).getKey();
+        if(!white_list.contains(column_name))
+        {
+            System.out.println("Not in whitelist:" + column_name);
+            return false;
+        }
+
+        columns = String.format(columns, column_name);
+        String values = "?";
+        for(int i = 1; i < attributes_no; i++)
+        {
+            columns += ", %s";
+            column_name = attributes.get(i).getKey();
+            columns = String.format(columns, column_name);
+            if(!white_list.contains(column_name))
+            {
+                System.out.println("Not in whitelist:" + column_name);
+                return false;
+            }
+
+            values += ", ?";
+        }
+        query = "insert into t_series(" + columns + ") values(" + values + ");";
+
+        //prepare
+        st = con.prepareStatement(query);
+
+        //set parameters
+        for(int i = 0; i < attributes_no; i++)
+        {
+            st.setObject(i + 1, attributes.get(i).getValue()); //set the attribute value
+        }
+
+        //execute
+        boolean inserted = st.execute();
+
+        //clean
+        st.close();
+        con.close();
+
+        return inserted;
     }
 }

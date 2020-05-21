@@ -18,6 +18,7 @@ public class SeasonInfoContainer
 
     private String watch_status;
     private Integer current_ep;
+    private Integer score;
 
     private Triplet<Integer, String, String> prequel; //(prequel_id, prequel_title, season_poster)
 
@@ -32,7 +33,7 @@ public class SeasonInfoContainer
 
     }
 
-    public SeasonInfoContainer(Integer season_id, String season_title, LocalDate release_date, LocalDate end_date, Integer season_no, String season_poster, String watch_status, Integer current_ep, Triplet<Integer, String, String> prequel, Triplet<Integer, String, String> sequel, Triplet<Integer, String, String> series, List<Pair<Integer, String>> episodes)
+    public SeasonInfoContainer(Integer season_id, String season_title, LocalDate release_date, LocalDate end_date, Integer season_no, String season_poster, String watch_status, Integer current_ep, Integer score, Triplet<Integer, String, String> prequel, Triplet<Integer, String, String> sequel, Triplet<Integer, String, String> series, List<Pair<Integer, String>> episodes)
     {
         this.season_id = season_id;
         this.season_title = season_title;
@@ -42,6 +43,7 @@ public class SeasonInfoContainer
         this.season_poster = season_poster;
         this.watch_status = watch_status;
         this.current_ep = current_ep;
+        this.score = score;
         this.prequel = prequel;
         this.sequel = sequel;
         this.series = series;
@@ -126,6 +128,16 @@ public class SeasonInfoContainer
     public void setCurrent_ep(Integer current_ep)
     {
         this.current_ep = current_ep;
+    }
+
+    public Integer getScore()
+    {
+        return score;
+    }
+
+    public void setScore(Integer score)
+    {
+        this.score = score;
     }
 
     public Triplet<Integer, String, String> getPrequel()

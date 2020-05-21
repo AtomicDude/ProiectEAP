@@ -21,7 +21,7 @@
             }
         };
 
-        http.open("GET", "<%=request.getContextPath() + "/lists/search_list.jsp?search_key="%>" + search_input.value, true);
+        http.open("GET", "<%=request.getContextPath() + "/search_list?search_key="%>" + search_input.value, true);
         http.send();
     }
 

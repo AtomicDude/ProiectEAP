@@ -5,9 +5,9 @@
     <title>Title</title>
 </head>
 <body>
-    <form method = "post" action = "uploadprofile_picture" enctype = "multipart/form-data">
+    <form method = "post" action = "upload_profile_picture" enctype = "multipart/form-data">
         <input type = "file" name = "profile_picture" accept = "image/*">
-        <input type = "submit" name = "submit">
+        <input type = "submit">
     </form>
 </body>
 </html>

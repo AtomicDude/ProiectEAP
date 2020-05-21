@@ -2,28 +2,28 @@ package com.tvseries.containers;
 
 import java.time.LocalDate;
 
-public class SeasonListContainer
+public class SeasonsListContainer
 {
     private Integer season_id;
     private String season_title;
     private LocalDate my_start;
     private LocalDate my_end;
-    private String watch_status;
+    private Integer score;
     private Integer current_ep;
     private String season_poster;
 
-    public SeasonListContainer()
+    public SeasonsListContainer()
     {
 
     }
 
-    public SeasonListContainer(Integer season_id, String season_title, LocalDate my_start, LocalDate my_end, String watch_status, Integer current_ep, String season_poster)
+    public SeasonsListContainer(Integer season_id, String season_title, LocalDate my_start, LocalDate my_end, Integer score, Integer current_ep, String season_poster)
     {
         this.season_id = season_id;
         this.season_title = season_title;
         this.my_start = my_start;
         this.my_end = my_end;
-        this.watch_status = watch_status;
+        this.score = score;
         this.current_ep = current_ep;
         this.season_poster = season_poster;
     }
@@ -68,14 +68,14 @@ public class SeasonListContainer
         this.my_end = my_end;
     }
 
-    public String getWatch_status()
+    public Integer getScore()
     {
-        return watch_status;
+        return score;
     }
 
-    public void setWatch_status(String watch_status)
+    public void setScore(Integer score)
     {
-        this.watch_status = watch_status;
+        this.score = score;
     }
 
     public Integer getCurrent_ep()

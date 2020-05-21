@@ -1,41 +1,42 @@
-<%@ page import="com.tvseries.tables.ListItem" %>
 <%@ page import="java.util.ArrayList" %>
+<%@ page import="com.tvseries.containers.SeasonsListContainer" %>
+<%@ page import="java.util.List" %>
+<%@ page import="com.tvseries.containers.SearchListContainer" %>
 <!-- A list displayed in the main section of the list.jsp -->
 
 <table class = "ltable">
     <tr>
         <th>No</th>
         <th>Title</th>
-        <th>Season number</th>
         <th>Episodes watched</th>
         <th>Score</th>
     </tr>
     <%
-        ArrayList<ListItem> seasons = (ArrayList<ListItem>)request.getAttribute("list");
-
-        if(seasons.size() > 0)
+        List<SeasonsListContainer> seasons_list = (List<SeasonsListContainer>)request.getAttribute("seasons_list");
+    %>
+    <%
+        int index = 1;
+        for(SeasonsListContainer s : seasons_list)
         {
     %>
+            <tr>
+                <td><%=index++%></td>
+                <td>
+                    <a href = "<%=request.getContextPath() + "/season_info?season_id=" + s.getSeason_id()%>">
+                        <%=s.getSeason_title()%>
+                    </a>
+                </td>
+                <td><%=s.getCurrent_ep()%></td>
+                <td><%=s.getScore()%></td>
+            </tr>
     <%
-            int index = 1;
-            for(ListItem s : seasons)
-            {
-    %>
-                <tr>
-                    <td><%=index++%></td>
-                    <td><%=s.getTitle()%></td>
-                    <td><%=s.getSeason_no()%></td>
-                    <td><%=s.getCurrent_ep()%></td>
-                    <td><%=s.getScore()%></td>
-                </tr>
-    <%
-            }
-
         }
-        else
+        if(seasons_list.isEmpty())
         {
     %>
-            <tr><span>The list is empty</span></tr>
+            <tr>
+               <td colspan="4">The list is empty</td>
+            </tr>
     <%
         }
     %>

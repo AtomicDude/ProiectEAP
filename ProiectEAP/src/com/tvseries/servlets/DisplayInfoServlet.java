@@ -32,8 +32,9 @@ public class DisplayInfoServlet extends HttpServlet
 
         Integer season_id = Integer.parseInt(season_id_str);
 
-        if(!SeasonInfoDAO.exists(season_id))
+        if(!SeasonInfoDAO.existsSeason(season_id))
         {
+            System.out.println("check if exists");
             res.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
@@ -57,7 +58,7 @@ public class DisplayInfoServlet extends HttpServlet
 
         Integer series_id = Integer.parseInt(series_id_str);
 
-        if(!SeriesInfoDAO.exists(series_id))
+        if(!SeriesInfoDAO.existsSeries(series_id))
         {
             res.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
@@ -82,7 +83,7 @@ public class DisplayInfoServlet extends HttpServlet
 
         Integer episode_id = Integer.parseInt(episode_id_str);
 
-        if(!EpisodeInfoDAO.exists(episode_id))
+        if(!EpisodeInfoDAO.existsEpisode(episode_id))
         {
             res.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
@@ -100,7 +101,7 @@ public class DisplayInfoServlet extends HttpServlet
         String encoded_username = req.getParameter("username");
         String username = Encoder.decodeUsername(encoded_username);
 
-        if(username == null || !PasswordChecker.onlyDigitsAndLetters(username) || !UserInfoDAO.exists(username))
+        if(username == null || !PasswordChecker.onlyDigitsAndLetters(username) || !UserInfoDAO.existsUser(username))
         {
             res.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;

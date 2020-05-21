@@ -41,6 +41,8 @@
     <servlet-mapping>
         <servlet-name>list_manager</servlet-name>
         <url-pattern>/restricted/list</url-pattern>
+        <url-pattern>/search_list/*</url-pattern>
+        <url-pattern>/update_list</url-pattern>
     </servlet-mapping>
 
     <!-- File upload servlet -->
@@ -51,9 +53,10 @@
 
     <servlet-mapping>
         <servlet-name>file_upload</servlet-name>
-        <url-pattern>/uploadprofile_picture</url-pattern>
-        <url-pattern>/administrative/upload_season</url-pattern>
+        <url-pattern>/upload_profile_picture</url-pattern>
         <url-pattern>/administrative/upload_series</url-pattern>
+        <url-pattern>/administrative/upload_season</url-pattern>
+        <url-pattern>/administrative/upload_episode</url-pattern>
     </servlet-mapping>
 
     <!-- Image fetch servlet -->

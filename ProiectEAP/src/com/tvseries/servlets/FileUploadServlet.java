@@ -1,11 +1,16 @@
 package com.tvseries.servlets;
 
+import com.tvseries.dao.EpisodeInfoDAO;
+import com.tvseries.dao.SeasonInfoDAO;
+import com.tvseries.dao.SeriesInfoDAO;
 import com.tvseries.dao.UserInfoDAO;
 import com.tvseries.utils.RandomString;
+import javafx.util.Pair;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.validator.GenericValidator;
 
 
 import javax.servlet.ServletContext;
@@ -16,6 +21,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 
@@ -112,18 +120,11 @@ public class FileUploadServlet extends HttpServlet
         return false;
     }
 
-    public void processSeasons(HttpServletRequest req, HttpServletResponse res, List<FileItem> file_items) throws Exception
+    public void processSeries(HttpServletRequest req, HttpServletResponse res, List<FileItem> file_items) throws Exception
     {
-        File file = null;
+        File file;
 
-        String title = null;
-        LocalDate release_date = null;
-        LocalDate end_date = null;
-        Integer season_no = null;
-        String season_poster = null;
-        String prequel_title = null;
-        String sequel_title = null;
-        String series_title = null;
+        List<Pair<String, Object>> attributes = new ArrayList<>();
 
         for(FileItem fi : file_items)
         {
@@ -132,7 +133,7 @@ public class FileUploadServlet extends HttpServlet
                 String file_name = fi.getName();
                 String hash_name = generateFileName(file_name);
 
-                season_poster = posters_relative + hash_name;
+                attributes.add(new Pair<>("series_poster",  posters_relative + hash_name));
 
                 file = new File(posters_path + hash_name);
 
@@ -141,78 +142,151 @@ public class FileUploadServlet extends HttpServlet
                 if(!file.exists())
                 {
                     System.out.println("File could not be uploaded!");
+                    return;
                 }
             }
             else //fi is a field
             {
                 String field = fi.getFieldName();
-                String value = fi.getString();
+                String field_value = fi.getString();
 
-                if(field == null)
+                if(!GenericValidator.isBlankOrNull(field))
                 {
-                    //do nothing
-                }
-                else if(field.equals("title"))
-                {
-                    title = value;
-                }
-                else if(field.equals("release_date"))
-                {
-                    if(value != null && !value.equals(""))
+                    Object value = null;
+
+                    switch (field)
                     {
-                        release_date = LocalDate.parse(value);
+                        case "series_id":
+                            if(GenericValidator.isInt(field_value))
+                            {
+                                value = Integer.parseInt(field_value);
+                            }
+                            break;
+
+                        case "series_title":
+                        case "rating":
+                            if(!GenericValidator.isBlankOrNull(field_value))
+                            {
+                                value = field_value;
+                            }
+                            break;
                     }
-                }
-                else if(field.equals("end_date"))
-                {
-                    if(value != null && !value.equals(""))
-                    {
-                        end_date = LocalDate.parse(value);
-                    }
-                }
-                else if(field.equals("season_no"))
-                {
-                    season_no = Integer.parseInt(value);
-                }
-                else if(field.equals("prequel_title"))
-                {
-                    prequel_title = value;
-                }
-                else if(field.equals("sequel_title"))
-                {
-                    sequel_title = value;
-                }
-                else if(field.equals("series_title"))
-                {
-                    series_title = value;
+                    attributes.add(new Pair<>(field, value));
                 }
             }
         }
 
-        Integer prequel_id = null;
-        Integer sequel_id = null;
-        Integer series_id = null;
+        boolean added = SeriesInfoDAO.addSeries(attributes);
+    }
 
-        /*
-        if(prequel_title != null)
+    public void processSeason(HttpServletRequest req, HttpServletResponse res, List<FileItem> file_items) throws Exception
+    {
+        File file;
+
+        List<Pair<String, Object>> attributes = new ArrayList<>();
+
+        for(FileItem fi : file_items)
         {
-            prequel_id = (Integer)SeasonDAO.getAttribute(prequel_title, "season_id");
+            if (!fi.isFormField()) //if fi is an uploaded file
+            {
+                String file_name = fi.getName();
+                String hash_name = generateFileName(file_name);
+
+                attributes.add(new Pair<>("season_poster",  posters_relative + hash_name));
+
+                file = new File(posters_path + hash_name);
+
+                fi.write(file);
+
+                if(!file.exists())
+                {
+                    System.out.println("File could not be uploaded!");
+                    return;
+                }
+            }
+            else //fi is a field
+            {
+                String field = fi.getFieldName();
+                String field_value = fi.getString();
+
+                if(!GenericValidator.isBlankOrNull(field))
+                {
+                    Object value = null;
+
+                    switch (field)
+                    {
+                        case "season_no":
+                        case "prequel_id":
+                        case "sequel_id":
+                        case "series_id":
+                            if(GenericValidator.isInt(field_value))
+                            {
+                                value = Integer.parseInt(field_value);
+                            }
+                            break;
+
+                        case "season_title":
+                            if(!GenericValidator.isBlankOrNull(field_value))
+                            {
+                                value = field_value;
+                            }
+                            break;
+
+                        case "release_date":
+                        case "end_date":
+                            if(GenericValidator.isDate(field_value, "yyyy-MM-dd", false))
+                            {
+                                value = LocalDate.parse(field_value, DateTimeFormatter.ISO_LOCAL_DATE);
+                            }
+                            break;
+                    }
+                    attributes.add(new Pair<>(field, value));
+                }
+            }
         }
 
-        if(sequel_title != null)
+        boolean added = SeasonInfoDAO.addSeason(attributes);
+    }
+
+    public void processEpisode(HttpServletRequest req, HttpServletResponse res, List<FileItem> file_items) throws Exception
+    {
+        List<Pair<String, Object>> attributes = new ArrayList<>();
+
+        Enumeration<String> parameters =  req.getParameterNames();
+
+        while (parameters.hasMoreElements())
         {
-            sequel_id = (Integer)SeasonDAO.getAttribute(sequel_title, "season_id");
+           String field = parameters.nextElement();
+           String field_value = req.getParameter(field);
+
+            if(!GenericValidator.isBlankOrNull(field))
+            {
+                Object value = null;
+
+                switch (field)
+                {
+                    case "episode_id":
+                    case "episode_no":
+                    case "duration":
+                    case "season_id":
+                        if(GenericValidator.isInt(field_value))
+                        {
+                            value = Integer.parseInt(field_value);
+                        }
+                        break;
+
+                    case "episode_title":
+                        if(!GenericValidator.isBlankOrNull(field))
+                        {
+                            value = field_value;
+                        }
+                        break;
+                }
+                attributes.add(new Pair<>(field, value));
+            }
         }
 
-        if(series_title != null)
-        {
-            series_id = (Integer)SeriesDAO.getAttribute(series_title, "series_id");
-        }
-
-
-        SeasonDAO.addSeason(title, release_date, end_date, season_no, poster_path, prequel_id, sequel_id, series_id);
-
-         */
+        boolean added = EpisodeInfoDAO.addEpisode(attributes);
     }
 
     public void doPost(HttpServletRequest req, HttpServletResponse res)
@@ -234,7 +308,7 @@ public class FileUploadServlet extends HttpServlet
             {
                 List<FileItem> file_items = upload.parseRequest(req);
 
-                if (servlet_path.equals("/uploadprofile_picture"))
+                if (servlet_path.equals("/upload_profile_picture"))
                 {
                     boolean uploaded = processProfilePictures(req, res, file_items);
 
@@ -247,10 +321,17 @@ public class FileUploadServlet extends HttpServlet
                         System.out.println("Not uploaded");
                     }
                 }
+                else if(servlet_path.equals("/administrative/upload_series"))
+                {
+                    processSeries(req, res, file_items);
+                }
                 else if(servlet_path.equals("/administrative/upload_season"))
                 {
-                    System.out.println(servlet_path);
-                    processSeasons(req, res, file_items);
+                    processSeason(req, res, file_items);
+                }
+                else if(servlet_path.equals("/administrative/upload_episode"))
+                {
+                    processEpisode(req, res, file_items);
                 }
             }
             catch (Exception e)

@@ -7,10 +7,11 @@
           <element id="module-output" name="com.tvseries" />
         </element>
         <element id="directory" name="lib">
-          <element id="library" level="project" name="c3p0:c3p0:0.9.1.2" />
           <element id="library" level="project" name="mysql:mysql-connector-java:8.0.19" />
           <element id="library" level="project" name="commons-codec:commons-codec:1.14" />
           <element id="library" level="project" name="commons-fileupload:commons-fileupload:1.3.1" />
+          <element id="library" level="project" name="com.mchange:c3p0:0.9.5.5" />
+          <element id="library" level="project" name="commons-validator:commons-validator:1.6" />
         </element>
       </element>
       <element id="javaee-facet-resources" facet="com.tvseries/web/Web" />
