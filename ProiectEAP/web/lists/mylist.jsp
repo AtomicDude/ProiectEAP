@@ -8,7 +8,6 @@
     <tr>
         <th>No</th>
         <th>Title</th>
-        <th>Episodes watched</th>
         <th>Score</th>
     </tr>
     <%
@@ -26,7 +25,6 @@
                         <%=s.getSeason_title()%>
                     </a>
                 </td>
-                <td><%=s.getCurrent_ep()%></td>
                 <td><%=s.getScore()%></td>
             </tr>
     <%
@@ -35,7 +33,7 @@
         {
     %>
             <tr>
-               <td colspan="4">The list is empty</td>
+               <td colspan="3">The list is empty</td>
             </tr>
     <%
         }

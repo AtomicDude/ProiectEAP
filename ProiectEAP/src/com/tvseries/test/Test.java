@@ -21,6 +21,12 @@ public class Test
 {
     public static void main(String[] args) throws Exception
     {
+        PreparedStatement st;
+        String query;
+        String id_pool = "(null" + ",?".repeat(5) + ");";
 
+        query = "delete from t_episodes_list where episode_id in " + id_pool;
+
+        System.out.println(query);
     }
 }

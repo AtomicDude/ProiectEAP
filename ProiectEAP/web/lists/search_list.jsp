@@ -30,12 +30,3 @@
         }
 %>
 
-<%
-    if(series.isEmpty() && seasons.isEmpty())
-    {
-%>
-        <p>No results</p>
-<%
-    }
-%>
-

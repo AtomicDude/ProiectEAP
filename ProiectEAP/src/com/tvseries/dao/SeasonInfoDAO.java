@@ -28,7 +28,7 @@ public class SeasonInfoDAO
 
         //build query
         query = "select sea.season_id, sea.season_title, sea.release_date, sea.end_date, sea.season_no, sea.season_poster, " +
-                "seali.watch_status, seali.current_ep, seali.score, " +
+                "seali.watch_status, seali.score, " +
                 "pre.season_id as 'prequel_id', pre.season_title as 'prequel_title', pre.season_poster as 'prequel_poster', " +
                 "seq.season_id as 'sequel_id', seq.season_title as 'sequel_title', seq.season_poster as 'sequel_poster', " +
                 "ser.series_id, ser.series_title, ser.series_poster " +
@@ -58,7 +58,6 @@ public class SeasonInfoDAO
             season_info.setSeason_title(rs.getObject("season_title", String.class));
             season_info.setSeason_poster(rs.getObject("season_poster", String.class));
             season_info.setSeason_no(rs.getObject("season_no", Integer.class));
-            season_info.setCurrent_ep(rs.getObject("current_ep", Integer.class));
             season_info.setScore(rs.getObject("score", Integer.class));
             season_info.setWatch_status(rs.getObject("watch_status", String.class));
             season_info.setRelease_date(rs.getObject("release_date", LocalDate.class));
@@ -72,6 +71,10 @@ public class SeasonInfoDAO
         st.close();
         rs.close();
 
+        //get the list of episodes
+        List<Triplet<Integer, String, Boolean>> episodes = new ArrayList<>();
+
+        //get every episode of the season
         //build query
         query = "select episode_id, episode_title " +
                 "from t_episode " +
@@ -85,12 +88,50 @@ public class SeasonInfoDAO
         rs = st.executeQuery();
 
         //process results
-        List<Pair<Integer, String>> episodes = new ArrayList<>();
-
         while(rs.next())
         {
-            episodes.add(new Pair<Integer, String>(rs.getObject("episode_id", Integer.class), rs.getObject("episode_title", String.class)));
+            episodes.add(new Triplet<Integer, String, Boolean>(rs.getObject("episode_id", Integer.class), rs.getObject("episode_title", String.class), false));
         }
+
+        //clean
+        st.close();
+        rs.close();
+
+        //get only the episodes of the season, that the user has watched
+        //build query
+        query = "select episode_id " +
+                "from t_episodes_list " +
+                "where season_id <=> ? and username <=> ?;";
+
+        //prepare
+        st = con.prepareStatement(query);
+        //set parameters
+        st.setObject(1, season_id);
+        st.setObject(2, username);
+        //execute
+        rs = st.executeQuery();
+
+        //process results
+        while(rs.next())
+        {
+            //get the episode_id of the watched episode
+            Integer episode_id = rs.getObject("episode_id", Integer.class);
+
+            //find the index of the episode in the list with the same episode_id of the watched one
+            int i = 0;
+            String episode_title = null;
+            for(Triplet<Integer, String, Boolean> e : episodes)
+            {
+                if(e.getFirst().equals(episode_id))
+                {
+                    episode_title = e.getSecond();
+                    break;
+                }
+                i++;
+            }
+            episodes.set(i, new Triplet<>(episode_id, episode_title, true));
+        }
+
         season_info.setEpisodes(episodes);
 
         //clean
@@ -228,7 +269,7 @@ public class SeasonInfoDAO
         List<SeasonsListContainer> season_list = new ArrayList<>();
 
         //build query
-        query = "select season_id, season_title, my_start, my_end, score, current_ep, season_poster " +
+        query = "select season_id, season_title, my_start, my_end, score, season_poster " +
                 "from t_seasons_list join t_season using(season_id) " +
                 "where username <=> ? and watch_status <=> ?;";
 
@@ -248,7 +289,6 @@ public class SeasonInfoDAO
                                                     rs.getObject("my_start", LocalDate.class),
                                                     rs.getObject("my_end", LocalDate.class),
                                                     rs.getObject("score", Integer.class),
-                                                    rs.getObject("current_ep", Integer.class),
                                                     rs.getObject("season_poster", String.class)));
         }
 

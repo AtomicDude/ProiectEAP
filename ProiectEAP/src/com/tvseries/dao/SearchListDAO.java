@@ -4,6 +4,7 @@ import com.tvseries.containers.EpisodeInfoContainer;
 import com.tvseries.containers.SearchListContainer;
 import com.tvseries.utils.C3P0DataSource;
 import com.tvseries.utils.Triplet;
+import org.apache.commons.validator.GenericValidator;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,6 +16,11 @@ public class SearchListDAO
 {
     public static SearchListContainer getSearchList(String search_key, Integer limit_series, Integer limit_seasons) throws Exception
     {
+        if(GenericValidator.isBlankOrNull(search_key))
+        {
+            return new SearchListContainer();
+        }
+
         Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
         String query;
         PreparedStatement st;

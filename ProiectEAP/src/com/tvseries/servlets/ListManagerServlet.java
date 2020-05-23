@@ -7,6 +7,7 @@ import com.tvseries.dao.SeasonInfoDAO;
 import com.tvseries.dao.UserInfoDAO;
 import com.tvseries.utils.PasswordChecker;
 import com.tvseries.utils.Triplet;
+import org.apache.commons.validator.GenericValidator;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListManagerServlet extends HttpServlet
@@ -108,64 +110,83 @@ public class ListManagerServlet extends HttpServlet
         String username = (String)session.getAttribute("username");
         String season_id_str = req.getParameter("season_id");
 
+        //if someone tries to update the list without being logged in
         if(username == null)
         {
             res.sendRedirect(req.getContextPath() + "/login.jsp");
             return;
         }
 
+        //if the season_id is invalid
         if(season_id_str == null || !PasswordChecker.onlyDigits(season_id_str))
         {
             res.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
 
+        //get the inputs
         Integer season_id = Integer.parseInt(season_id_str);
         String current_watch_status = processStatus(req.getParameter("current_watch_status"));
         String watch_status = processStatus(req.getParameter("watch_status"));
+        String[] watched_episodes_str = req.getParameterValues("episode");
 
-        if(watch_status.equals("Not watching"))
+        //build a list of episode_ids that the user has watched
+        List<Integer> watched_episodes = new ArrayList<>();
+        if(watched_episodes_str != null)
         {
-            req.setAttribute("message", "Status not selected!");
-            req.getRequestDispatcher("/season_info?season_id=" + season_id).forward(req, res);
-        }
-
-        String current_ep_str = req.getParameter("current_ep");
-        String score_str = req.getParameter("score");
-
-        Integer current_ep = current_ep_str == null ? null : Integer.parseInt(current_ep_str);
-        Integer score = score_str == null ? null : Integer.parseInt(score_str);
-
-        LocalDate my_start = null;
-        LocalDate my_end = null;
-
-        //TODO: logica pentru setat my_start, my_end, logica pentru setat Completed daca am vazut toate episoadele
-        /*
-        if(current_watch_status.equals("Not watching"))
-        {
-            if(watch_status.equals("Watching"))
+            for (String s : watched_episodes_str)
             {
-                my_start = LocalDate.now(ZoneId.of("Europe/Paris"));
+                if (GenericValidator.isInt(s))
+                {
+                    watched_episodes.add(Integer.parseInt(s));
+                }
             }
         }
-        else if(current_watch_status.equals("Watching"))
-        {
-            if(watch_status.equals("Completed"))
-            {
-                my_end = LocalDate.now(ZoneId.of("Europe/Paris"));
-            }
-        }
-        */
 
         try
         {
-            boolean updated = UserInfoDAO.updateSeasonsList(season_id, username, my_start, my_end, score, current_ep, watch_status);
+            if (watch_status.equals("Not watching"))
+            {
+                boolean removed = UserInfoDAO.removeSeason(season_id, username);
+                //TODO: afiseaza ceva cand stergi sezonul din lista
+            }
+            else
+            {
+                String score_str = req.getParameter("score");
+                Integer score = score_str == null ? null : Integer.parseInt(score_str);
 
-            //TODO: fa ceva atunci cand este updatat
+                LocalDate my_start = null;
+                LocalDate my_end = null;
+
+                //TODO: logica pentru setat my_start, my_end, logica pentru setat Completed daca am vazut toate episoadele
+            /*
+            if(current_watch_status.equals("Not watching"))
+            {
+                if(watch_status.equals("Watching"))
+                {
+                    my_start = LocalDate.now(ZoneId.of("Europe/Paris"));
+                }
+            }
+            else if(current_watch_status.equals("Watching"))
+            {
+                if(watch_status.equals("Completed"))
+                {
+                    my_end = LocalDate.now(ZoneId.of("Europe/Paris"));
+                }
+            }
+            */
+
+                boolean updated_season = UserInfoDAO.updateSeasonsList(season_id, username, my_start, my_end, score, watch_status);
+                boolean updated_episodes = UserInfoDAO.updateEpisodesList(watched_episodes, username, season_id);
+
+                //TODO: fa ceva atunci cand este updatat
+            }
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
+
+        res.sendRedirect(req.getContextPath() + "/season_info?season_id=" + season_id_str);
     }
 }

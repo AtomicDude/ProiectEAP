@@ -17,7 +17,6 @@ public class SeasonInfoContainer
     private String season_poster;
 
     private String watch_status;
-    private Integer current_ep;
     private Integer score;
 
     private Triplet<Integer, String, String> prequel; //(prequel_id, prequel_title, season_poster)
@@ -26,14 +25,15 @@ public class SeasonInfoContainer
 
     private Triplet<Integer, String, String> series; //(series_id, series_title, series_poster)
 
-    private List<Pair<Integer, String>> episodes; //list of (episode_id, episode_title)
+    private List<Triplet<Integer, String, Boolean>> episodes; //list of (episode_id, episode_title, //watched)
+    //the Boolean is set by verifying a list of watched episodes
 
     public SeasonInfoContainer()
     {
 
     }
 
-    public SeasonInfoContainer(Integer season_id, String season_title, LocalDate release_date, LocalDate end_date, Integer season_no, String season_poster, String watch_status, Integer current_ep, Integer score, Triplet<Integer, String, String> prequel, Triplet<Integer, String, String> sequel, Triplet<Integer, String, String> series, List<Pair<Integer, String>> episodes)
+    public SeasonInfoContainer(Integer season_id, String season_title, LocalDate release_date, LocalDate end_date, Integer season_no, String season_poster, String watch_status, Integer score, Triplet<Integer, String, String> prequel, Triplet<Integer, String, String> sequel, Triplet<Integer, String, String> series, List<Triplet<Integer, String, Boolean>> episodes)
     {
         this.season_id = season_id;
         this.season_title = season_title;
@@ -42,7 +42,6 @@ public class SeasonInfoContainer
         this.season_no = season_no;
         this.season_poster = season_poster;
         this.watch_status = watch_status;
-        this.current_ep = current_ep;
         this.score = score;
         this.prequel = prequel;
         this.sequel = sequel;
@@ -120,16 +119,6 @@ public class SeasonInfoContainer
         this.watch_status = watch_status;
     }
 
-    public Integer getCurrent_ep()
-    {
-        return current_ep;
-    }
-
-    public void setCurrent_ep(Integer current_ep)
-    {
-        this.current_ep = current_ep;
-    }
-
     public Integer getScore()
     {
         return score;
@@ -170,12 +159,12 @@ public class SeasonInfoContainer
         this.series = series;
     }
 
-    public List<Pair<Integer, String>> getEpisodes()
+    public List<Triplet<Integer, String, Boolean>> getEpisodes()
     {
         return episodes;
     }
 
-    public void setEpisodes(List<Pair<Integer, String>> episodes)
+    public void setEpisodes(List<Triplet<Integer, String, Boolean>> episodes)
     {
         this.episodes = episodes;
     }

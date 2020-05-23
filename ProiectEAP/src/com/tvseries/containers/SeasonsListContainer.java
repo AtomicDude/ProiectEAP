@@ -17,14 +17,13 @@ public class SeasonsListContainer
 
     }
 
-    public SeasonsListContainer(Integer season_id, String season_title, LocalDate my_start, LocalDate my_end, Integer score, Integer current_ep, String season_poster)
+    public SeasonsListContainer(Integer season_id, String season_title, LocalDate my_start, LocalDate my_end, Integer score, String season_poster)
     {
         this.season_id = season_id;
         this.season_title = season_title;
         this.my_start = my_start;
         this.my_end = my_end;
         this.score = score;
-        this.current_ep = current_ep;
         this.season_poster = season_poster;
     }
 
@@ -76,16 +75,6 @@ public class SeasonsListContainer
     public void setScore(Integer score)
     {
         this.score = score;
-    }
-
-    public Integer getCurrent_ep()
-    {
-        return current_ep;
-    }
-
-    public void setCurrent_ep(Integer current_ep)
-    {
-        this.current_ep = current_ep;
     }
 
     public String getSeason_poster()

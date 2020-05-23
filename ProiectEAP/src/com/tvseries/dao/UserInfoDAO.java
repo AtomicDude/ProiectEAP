@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,7 +91,7 @@ public class UserInfoDAO
         List<SeasonsListContainer> season_list = new ArrayList<>();
 
         //build query
-        query = "select season_id, season_title, my_start, my_end, current_ep, score, season_poster " +
+        query = "select season_id, season_title, my_start, my_end, score, season_poster " +
                 "from t_seasons_list join t_season using(season_id) " +
                 "where username <=> ? and watch_status <=> ?;";
 
@@ -109,7 +110,6 @@ public class UserInfoDAO
             season.setSeason_title(rs.getObject("season_title", String.class));
             season.setSeason_poster(rs.getObject("season_poster", String.class));
             season.setScore(rs.getObject("score", Integer.class));
-            season.setCurrent_ep(rs.getObject("current_ep", Integer.class));
             season.setMy_start(rs.getObject("my_start", LocalDate.class));
             season.setMy_end(rs.getObject("my_end", LocalDate.class));
 
@@ -311,16 +311,16 @@ public class UserInfoDAO
         return in_list;
     }
 
-    public static boolean updateSeasonsList(Integer season_id, String username, LocalDate my_start, LocalDate my_end, Integer score, Integer current_ep, String watch_status) throws Exception
+    public static boolean updateSeasonsList(Integer season_id, String username, LocalDate my_start, LocalDate my_end, Integer score, String watch_status) throws Exception
     {
         Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
         String query;
         PreparedStatement st;
 
         //build query
-        query = "insert into t_seasons_list(season_id, username, my_start, my_end, score, current_ep, watch_status) " +
-                "values(?, ?, ?, ?, ?, ?, ?) " +
-                "on duplicate key update my_start = ?, my_end = ?, score = ?, current_ep = ?, watch_status = ?;";
+        query = "insert into t_seasons_list(season_id, username, my_start, my_end, score, watch_status) " +
+                "values(?, ?, ?, ?, ?, ?) " +
+                "on duplicate key update my_start = ?, my_end = ?, score = ?, watch_status = ?;";
 
         //prepare
         st = con.prepareStatement(query);
@@ -331,14 +331,94 @@ public class UserInfoDAO
         st.setObject(3, my_start);
         st.setObject(4, my_end);
         st.setObject(5, score);
-        st.setObject(6, current_ep);
-        st.setObject(7, watch_status);
-        st.setObject(8, my_start);
-        st.setObject(9, my_end);
-        st.setObject(10, score);
-        st.setObject(11, current_ep);
-        st.setObject(12, watch_status);
+        st.setObject(6, watch_status);
+        st.setObject(7, my_start);
+        st.setObject(8, my_end);
+        st.setObject(9, score);
+        st.setObject(10, watch_status);
 
+        //execute
+        boolean updated = st.executeUpdate() > 0;
+
+        //clean
+        st.close();
+        con.close();
+
+        return updated;
+    }
+
+    public static boolean removeSeason(Integer season_id, String username) throws Exception
+    {
+        Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
+        String query;
+        PreparedStatement st;
+
+        //build query
+        query = "delete from t_seasons_list where season_id <=> ? and username <=> ?";
+
+        //prepare
+        st = con.prepareStatement(query);
+
+        //set parameters
+        st.setObject(1, season_id);
+        st.setObject(2, username);
+
+        //execute
+        boolean removed = st.executeUpdate() > 0;
+
+        //clean
+        st.close();
+        con.close();
+
+        return removed;
+    }
+
+    public static boolean updateEpisodesList(List<Integer> episode_ids, String username, Integer season_id) throws Exception
+    {
+        Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
+        String query;
+        PreparedStatement st;
+
+        //remove every episode of the season from the list
+        query = "delete from t_episodes_list where username <=> ? and season_id <=> ?;";
+
+        //prepare
+        st = con.prepareStatement(query);
+
+        //set parameters
+        st.setObject(1, username);
+        st.setObject(2, season_id);
+
+        //execute
+        boolean deleted = st.executeUpdate() >= 0;
+
+        //clean
+        st.close();
+
+        //update the watched episodes
+        if(episode_ids.isEmpty())
+        {
+            return deleted;
+        }
+
+        //build query
+        String values = "(?,?,?,?)" + ",(?,?,?,?)".repeat(episode_ids.size() - 1) + ";";
+        query = "insert into t_episodes_list(episode_id, season_id, username, watch_date) " +
+                "values " + values;
+
+        //prepare
+        st = con.prepareStatement(query);
+
+        LocalDate watch_date = LocalDate.now(ZoneId.of("Europe/Paris"));
+        //set parameters
+        int i = 1;
+        for(Integer episode_id : episode_ids)
+        {
+            st.setObject(i++, episode_id);
+            st.setObject(i++, season_id);
+            st.setObject(i++, username);
+            st.setObject(i++, watch_date);
+        }
         //execute
         boolean updated = st.executeUpdate() > 0;
 

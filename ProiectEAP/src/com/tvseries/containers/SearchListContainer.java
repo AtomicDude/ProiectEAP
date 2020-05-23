@@ -2,6 +2,7 @@ package com.tvseries.containers;
 
 import com.tvseries.utils.Triplet;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SearchListContainer
@@ -11,7 +12,8 @@ public class SearchListContainer
 
     public SearchListContainer()
     {
-
+        series = new ArrayList<>();
+        seasons = new ArrayList<>();
     }
 
     public SearchListContainer(List<Triplet<Integer, String, String>> series, List<Triplet<Integer, String, String>> seasons)
