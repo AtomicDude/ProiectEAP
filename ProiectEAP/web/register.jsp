@@ -15,7 +15,7 @@
 
         <%Map<String, String> messages = (Map<String, String>)request.getAttribute("messages");%>
 
-        <form action = "register" method = "post">
+        <form action = "<%=request.getContextPath() + "register"%>" method = "post">
             <table>
                 <!-- First name -->
                 <tr>

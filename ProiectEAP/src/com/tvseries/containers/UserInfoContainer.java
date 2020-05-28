@@ -13,14 +13,14 @@ public class UserInfoContainer
     private LocalDate birth_date;
     private String picture_path;
 
-    private List<Triplet<String, String, String>> friends; //list of (username, display_name, picture_path) for friends
+    private List<FriendsInfoContainer> friends; //list of (username, display_name, picture_path) for friends
 
     public UserInfoContainer()
     {
 
     }
 
-    public UserInfoContainer(String username, String display_name, String first_name, String last_name, LocalDate birth_date, String picture_path, List<Triplet<String, String, String>> friends)
+    public UserInfoContainer(String username, String display_name, String first_name, String last_name, LocalDate birth_date, String picture_path, List<FriendsInfoContainer> friends)
     {
         this.username = username;
         this.display_name = display_name;
@@ -91,14 +91,13 @@ public class UserInfoContainer
         this.picture_path = picture_path;
     }
 
-    public List<Triplet<String, String, String>> getFriends()
+    public List<FriendsInfoContainer> getFriends()
     {
         return friends;
     }
 
-    public void setFriends(List<Triplet<String, String, String>> friends)
+    public void setFriends(List<FriendsInfoContainer> friends)
     {
         this.friends = friends;
     }
-
 }

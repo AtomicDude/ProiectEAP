@@ -1,5 +1,7 @@
 package com.tvseries.dao;
 
+import com.tvseries.containers.BingeWatchingContainer;
+import com.tvseries.containers.FriendsInfoContainer;
 import com.tvseries.containers.SeasonsListContainer;
 import com.tvseries.containers.UserInfoContainer;
 import com.tvseries.utils.C3P0DataSource;
@@ -9,6 +11,7 @@ import javafx.util.Pair;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -53,24 +56,28 @@ public class UserInfoDAO
         st.close();
         rs.close();
 
-        //build query
-        query = "select username2, display_name, picture_path " +
-                "from t_relationship join t_user on(username1 = username) " +
-                "where username <=> ? and relation_status = \"friends\";";
+        query = "select username1 as friend_username, display_name, picture_path " +
+                "from t_relationship join t_user on username1 = username " +
+                "where relation_status <=> 'friends' and username2 <=> ? " +
+                "union " +
+                "select username2 as friend_username, display_name, picture_path " +
+                "from t_relationship join t_user on username2 = username " +
+                "where relation_status <=> 'friends' and username1 <=> ?;";
 
         //prepare
         st = con.prepareStatement(query);
         //set parameters
         st.setObject(1, username);
+        st.setObject(2, username);
         //execute
         rs = st.executeQuery();
 
         //process results
-        List<Triplet<String, String, String>> friends = new ArrayList<>();
+        List<FriendsInfoContainer> friends = new ArrayList<>();
 
         while(rs.next())
         {
-            friends.add(new Triplet<>(rs.getObject("username2", String.class), rs.getObject("display_name", String.class), rs.getObject("picture_path", String.class)));
+            friends.add(new FriendsInfoContainer(rs.getObject("friend_username", String.class), rs.getObject("display_name", String.class), rs.getObject("picture_path", String.class)));
         }
         user_info.setFriends(friends);
 
@@ -171,7 +178,7 @@ public class UserInfoDAO
         ResultSet rs;
 
         //build query
-        query = "select username from t_user where username <=> ?;";
+        query = "select 1 from t_user where username <=> ?;";
 
         //prepare
         st = con.prepareStatement(query);
@@ -427,5 +434,305 @@ public class UserInfoDAO
         con.close();
 
         return updated;
+    }
+
+    public static boolean addFriend(String username, String friend_username) throws Exception
+    {
+        Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
+        String query;
+        PreparedStatement st;
+
+        //build query
+        query = "insert into t_relationship(username1, username2, relation_status) " +
+                "values(?, ?, ?);";
+
+        //prepare
+        st = con.prepareStatement(query);
+
+        //set parameters
+        st.setObject(1, username);
+        st.setObject(2, friend_username);
+        st.setObject(3, "pending");
+
+        //execute
+        boolean updated = st.executeUpdate() > 0;
+
+        //clean
+        st.close();
+        con.close();
+
+        return updated;
+    }
+
+    public static boolean acceptFriend(String username, String friend_username) throws Exception
+    {
+        Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
+        String query;
+        PreparedStatement st;
+
+        //build query
+        query = "update t_relationship set relation_status = 'friends' " +
+                "where username1 <=> ? and username2 <=> ?;";
+
+        //prepare
+        st = con.prepareStatement(query);
+
+        //set parameters
+        st.setObject(1, friend_username);
+        st.setObject(2, username);
+
+        //execute
+        boolean updated = st.executeUpdate() > 0;
+
+        //clean
+        st.close();
+        con.close();
+
+        return updated;
+    }
+
+    public static boolean removeFriend(String username, String friend_username) throws Exception
+    {
+        Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
+        String query;
+        PreparedStatement st;
+
+        //build query
+        query = "delete from t_relationship where (username1 <=> ? and username2 <=> ?) or (username2 <=> ? and username1 <=> ?);";
+
+        //prepare
+        st = con.prepareStatement(query);
+
+        //set parameters
+        st.setObject(1, username);
+        st.setObject(2, friend_username);
+        st.setObject(3, username);
+        st.setObject(4, friend_username);
+
+        //execute
+        boolean deleted = st.executeUpdate() > 0;
+
+        //clean
+        st.close();
+        con.close();
+
+        return deleted;
+    }
+
+    public static List<FriendsInfoContainer> getFriendsList(String username) throws Exception
+    {
+        Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
+        String query;
+        PreparedStatement st;
+        ResultSet rs;
+        List<FriendsInfoContainer> friends_list = new ArrayList<>();
+
+        query = "select username1 as friend_username, display_name, picture_path " +
+                "from t_relationship join t_user on username1 = username " +
+                "where relation_status <=> 'friends' and username2 <=> ? " +
+                "union " +
+                "select username2 as friend_username, display_name, picture_path " +
+                "from t_relationship join t_user on username2 = username " +
+                "where relation_status <=> 'friends' and username1 <=> ?;";
+
+        st = con.prepareStatement(query);
+
+        st.setObject(1, username);
+        st.setObject(2, username);
+
+        rs = st.executeQuery();
+
+        while(rs.next())
+        {
+            FriendsInfoContainer friend = new FriendsInfoContainer();
+            friend.setFriend_username(rs.getObject("friend_username", String.class));
+            friend.setFriend_display_name(rs.getObject("display_name", String.class));
+            friend.setFriend_picture(rs.getObject("picture_path", String.class));
+            friends_list.add(friend);
+        }
+
+        st.close();
+        rs.close();
+        con.close();
+
+        return friends_list;
+    }
+
+    public static List<FriendsInfoContainer> getPendingList(String username) throws Exception
+    {
+        Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
+        String query;
+        PreparedStatement st;
+        ResultSet rs;
+        List<FriendsInfoContainer> friends_list = new ArrayList<>();
+
+        query = "select username2 as friend_username, display_name, picture_path " +
+                "from t_relationship join t_user on username2 = username " +
+                "where relation_status <=> 'pending' and username1 <=> ?;";
+
+        st = con.prepareStatement(query);
+
+        st.setObject(1, username);
+
+        rs = st.executeQuery();
+
+        while(rs.next())
+        {
+            FriendsInfoContainer friend = new FriendsInfoContainer();
+            friend.setFriend_username(rs.getObject("friend_username", String.class));
+            friend.setFriend_picture(rs.getObject("picture_path", String.class));
+            friend.setFriend_display_name(rs.getObject("display_name", String.class));
+            friends_list.add(friend);
+        }
+
+        st.close();
+        rs.close();
+        con.close();
+
+        return friends_list;
+    }
+
+    public static List<FriendsInfoContainer> getRequestsList(String username) throws Exception
+    {
+        Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
+        String query;
+        PreparedStatement st;
+        ResultSet rs;
+        List<FriendsInfoContainer> friends_list = new ArrayList<>();
+
+        query = "select username1 as friend_username, display_name, picture_path " +
+                "from t_relationship join t_user on username1 = username " +
+                "where relation_status <=> 'pending' and username2 <=> ?;";
+
+        st = con.prepareStatement(query);
+
+        st.setObject(1, username);
+
+        rs = st.executeQuery();
+
+        while(rs.next())
+        {
+            FriendsInfoContainer friend = new FriendsInfoContainer();
+            friend.setFriend_username(rs.getObject("friend_username", String.class));
+            friend.setFriend_display_name(rs.getObject("display_name", String.class));
+            friend.setFriend_picture(rs.getObject("picture_path", String.class));
+            friends_list.add(friend);
+        }
+
+        st.close();
+        rs.close();
+        con.close();
+
+        return friends_list;
+    }
+
+    public static boolean alreadyFriends(String username, String friend_username) throws Exception
+    {
+        Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
+        String query;
+        PreparedStatement st;
+        ResultSet rs;
+
+        //build query
+        query = "select 1 from t_relationship where (username1 <=> ? and username2 <=> ?) or (username2 <=> ? and username1 <=> ?);";
+
+        //prepare
+        st = con.prepareStatement(query);
+
+        st.setObject(1, username);
+        st.setObject(2, friend_username);
+        st.setObject(3, username);
+        st.setObject(4, friend_username);
+
+        rs = st.executeQuery();
+
+        boolean friends = rs.next();
+
+        st.close();
+        rs.close();
+        con.close();
+
+        return friends;
+    }
+
+    public static boolean addToBingeWatching(String username, List<String> friends, Integer season_id) throws Exception
+    {
+        Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
+        String query;
+        PreparedStatement st;
+
+        //update the watched episodes
+        if(friends.isEmpty())
+        {
+            return true;
+        }
+
+        //build query
+        String values = "(?,?,?)" + ",(?,?,?)".repeat(friends.size() - 1) + ";";
+        query = "insert into t_binge_watching(username1, username2, season_id) " +
+                "values " + values;
+
+        //prepare
+        st = con.prepareStatement(query);
+
+        //set parameters
+        int i = 1;
+        for(String friend : friends)
+        {
+            st.setObject(i++, username);
+            st.setObject(i++, friend);
+            st.setObject(i++, season_id);
+        }
+        //execute
+        boolean added = st.executeUpdate() > 0;
+
+        //clean
+        st.close();
+        con.close();
+
+        return added;
+    }
+
+    public static List<BingeWatchingContainer> getBingeWatchingList(String username) throws Exception
+    {
+        Connection con = C3P0DataSource.getInstance().getConnection(); //establish connection
+        String query;
+        PreparedStatement st;
+        ResultSet rs;
+
+        query = "select username1 as friend_username, display_name, picture_path, " +
+                "season_id, season_title, season_poster " +
+                "from t_binge_watching " +
+                "join t_user on (username1 = username) " +
+                "join t_season using(season_id) " +
+                "where username2 <=> ?;";
+
+        st = con.prepareStatement(query);
+
+        st.setObject(1, username);
+
+        rs = st.executeQuery();
+
+        List<BingeWatchingContainer> binge_watching_list = new ArrayList<>();
+        while(rs.next())
+        {
+            BingeWatchingContainer bw = new BingeWatchingContainer();
+            bw.setFriend_username(rs.getObject("friend_username", String.class));
+            bw.setFriend_display_name(rs.getObject("display_name", String.class));
+            bw.setFriend_picture(rs.getObject("picture_path", String.class));
+
+            Triplet<Integer, String, String> season_info = new Triplet<>(rs.getObject("season_id", Integer.class),
+                                                                         rs.getObject("season_title", String.class),
+                                                                         rs.getObject("season_poster", String.class));
+            bw.setSeason_info(season_info);
+
+            binge_watching_list.add(bw);
+        }
+
+        st.close();
+        rs.close();
+        con.close();
+
+        return binge_watching_list;
     }
 }

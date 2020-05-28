@@ -9,6 +9,7 @@
         <th>No</th>
         <th>Title</th>
         <th>Score</th>
+        <th>Challenge</th>
     </tr>
     <%
         List<SeasonsListContainer> seasons_list = (List<SeasonsListContainer>)request.getAttribute("seasons_list");
@@ -26,6 +27,11 @@
                     </a>
                 </td>
                 <td><%=s.getScore()%></td>
+                <td>
+                    <a href = "<%=request.getContextPath() + "/restricted/binge_watching?season_id=" + s.getSeason_id()%>">
+                        Challenge
+                    </a>
+                </td>
             </tr>
     <%
         }

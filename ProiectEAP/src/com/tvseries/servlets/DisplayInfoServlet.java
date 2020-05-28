@@ -1,9 +1,6 @@
 package com.tvseries.servlets;
 
-import com.tvseries.containers.EpisodeInfoContainer;
-import com.tvseries.containers.SeasonInfoContainer;
-import com.tvseries.containers.SeriesInfoContainer;
-import com.tvseries.containers.UserInfoContainer;
+import com.tvseries.containers.*;
 import com.tvseries.dao.EpisodeInfoDAO;
 import com.tvseries.dao.SeasonInfoDAO;
 import com.tvseries.dao.SeriesInfoDAO;
@@ -15,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 public class DisplayInfoServlet extends HttpServlet
 {
@@ -98,8 +96,7 @@ public class DisplayInfoServlet extends HttpServlet
 
     public void displayUserPage(HttpServletRequest req, HttpServletResponse res) throws Exception
     {
-        String encoded_username = req.getParameter("username");
-        String username = Encoder.decodeUsername(encoded_username);
+        String username = req.getParameter("username");
 
         if(username == null || !PasswordChecker.onlyDigitsAndLetters(username) || !UserInfoDAO.existsUser(username))
         {

@@ -11,7 +11,7 @@
         <jsp:include page = "home/header.jsp"></jsp:include>
         <jsp:include page = "home/hnavbar.jsp"></jsp:include>
 
-        <form action = "log" method = "post">
+        <form action = "<%=request.getContextPath() + "/log"%>" method = "post">
             <table>
                 <!-- Username -->
                 <tr>
@@ -30,7 +30,7 @@
 
                 <!-- Login message -->
                 <tr>
-                    <td>${login_message}</td>
+                    <td><%=(String)request.getAttribute("login_message")%>></td>
                 </tr>
             </table>
         </form>

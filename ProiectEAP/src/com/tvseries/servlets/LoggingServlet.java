@@ -51,7 +51,6 @@ public class LoggingServlet extends HttpServlet
                     req.getRequestDispatcher("/login.jsp").forward(req, res);
                 }
             }
-
         }
         catch (Exception e)
         {

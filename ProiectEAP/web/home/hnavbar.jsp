@@ -1,6 +1,6 @@
 <!-- The horizontal navigation bar -->
 <!-- An auxiliary form needed for buttons -->
-<form id = "auxform" name = "auxform" style = "display: none"></form>
+<form id = "auxform1" name = "auxform1" style = "display: none"></form>
 
 <div class = "hnavbar">
     <div class = "hcell">
@@ -19,6 +19,10 @@
 
     <div class = "hcell">
         <a href = <%=request.getContextPath() + "/restricted/profile.jsp"%>>Profile</a>
+    </div>
+
+    <div class = "hcell">
+        <a href = <%=request.getContextPath() + "/restricted/show_friends"%>>Friends</a>
     </div>
 
     <div class = "hcell">
@@ -48,10 +52,11 @@
         {
     %>
             <div class = "hcell">
-                <a href = <%=request.getContextPath() + "/restricted/profile.jsp"%>><%=(String)session.getAttribute("display_name")%></a>
-                <img src = "<%= request.getContextPath() + (String)session.getAttribute("picture_path")%>" alt = "profile picture" style = "max-width: 40px; max-height: 40px; padding: 0px;">
+                <a href = <%=request.getContextPath() + "/restricted/profile.jsp"%>><%=(String)session.getAttribute("display_name")%>
+                    <img src = "<%= request.getContextPath() + (String)session.getAttribute("picture_path")%>" alt = "profile picture" style = "max-width: 40px; max-height: 40px; padding: 0px;">
+                </a>
                 <div class = "ddown">
-                    <button type = "submit" form = "auxform" formmethod = "post" formaction = <%=request.getContextPath() + "/log"%>>Logout</button>
+                    <button type = "submit" form = "auxform1" formmethod = "post" formaction = <%=request.getContextPath() + "/log"%>>Logout</button>
                 </div>
             </div>
     <%

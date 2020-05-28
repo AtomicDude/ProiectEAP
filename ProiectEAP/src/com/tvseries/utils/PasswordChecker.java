@@ -16,7 +16,7 @@ public class PasswordChecker
 
     private static boolean isSpecial(char ch)
     {
-        String special = "~`!@#$%^&*()-_+=[]{};:'<>/?|.";
+        String special = "~!@#$%^*()-_+=[]{};:/?|.";
 
         return (special.indexOf(ch) >= 0); //indexOf(ch) returns -1 if the ch is not present in the string
     }

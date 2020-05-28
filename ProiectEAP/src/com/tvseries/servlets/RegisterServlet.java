@@ -17,23 +17,19 @@ import com.tvseries.dao.UserInfoDAO;
 import com.tvseries.utils.PasswordChecker;
 import javafx.util.Pair;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.validator.GenericValidator;
 
 public class RegisterServlet extends HttpServlet
 {
     //TODO: validate email, check if username/email is unique
     public boolean validatePassword(String pass, String cpass)
     {
-        return (pass != null && pass.length() >= 10 && pass.length() <= 40 && pass.equals(cpass) && PasswordChecker.check(pass));
+        return (!GenericValidator.isBlankOrNull(pass) && pass.length() >= 5 && pass.length() <= 40 && pass.equals(cpass) && PasswordChecker.check(pass));
     }
 
     public boolean validateName(String name)
     {
-        return (name != null && name.length() >= 4 && name.length() <= 30 && PasswordChecker.check(name));
-    }
-
-    public boolean validateEmail(String email)
-    {
-        return (email != null);
+        return (!GenericValidator.isBlankOrNull(name) && name.length() >= 3 && name.length() <= 30 && PasswordChecker.check(name));
     }
 
     public String processPassword(String pass)
@@ -57,7 +53,7 @@ public class RegisterServlet extends HttpServlet
             messages.put("display", "Invalid display name");
         }
 
-        if(!validateEmail(email))
+        if(GenericValidator.isEmail(email))
         {
             messages.put("email", "Invalid email");
         }
@@ -79,15 +75,18 @@ public class RegisterServlet extends HttpServlet
         String cpassword = req.getParameter("cpass");
         String fname = req.getParameter("fname");
         String lname = req.getParameter("lname");
-        String bdates = req.getParameter("bdate");
+        String bdate_str = req.getParameter("bdate");
 
-
-        if(bdates == null || bdates.equals(""))
+        LocalDate bdate = null;
+        if(GenericValidator.isDate(bdate_str, "yyyy-MM-dd", true))
         {
-            bdates = "1900-01-01";
+            bdate = LocalDate.parse(bdate_str, DateTimeFormatter.ISO_LOCAL_DATE);
         }
 
-        LocalDate bdate = LocalDate.parse(bdates, DateTimeFormatter.ISO_LOCAL_DATE);
+        if(GenericValidator.isBlankOrNull(display_name))
+        {
+            display_name = username;
+        }
 
         Map<String, String> messages = validateCredentials(username, display_name, email, password, cpassword);
 
@@ -98,12 +97,12 @@ public class RegisterServlet extends HttpServlet
             String hashpass = processPassword(password);
 
             List<Pair<String, Object>> attributes = new ArrayList<>();
-            attributes.add(new Pair<>("username", req.getParameter("username")));
+            attributes.add(new Pair<>("username", username));
             attributes.add(new Pair<>("password", hashpass));
-            attributes.add(new Pair<>("display_name", req.getParameter("display_name")));
-            attributes.add(new Pair<>("email", req.getParameter("email")));
-            attributes.add(new Pair<>("first_name", req.getParameter("fname")));
-            attributes.add(new Pair<>("last_name", req.getParameter("lname")));
+            attributes.add(new Pair<>("display_name", display_name));
+            attributes.add(new Pair<>("email", email));
+            attributes.add(new Pair<>("first_name", fname));
+            attributes.add(new Pair<>("last_name", lname));
             attributes.add(new Pair<>("birth_date", bdate));
 
             try

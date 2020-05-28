@@ -85,6 +85,30 @@
         <url-pattern>/user_info</url-pattern>
     </servlet-mapping>
 
+    <!-- RelationshipServlet -->
+    <servlet>
+        <servlet-name>relationship</servlet-name>
+        <servlet-class>com.tvseries.servlets.RelationshipServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>relationship</servlet-name>
+        <url-pattern>/restricted/add_friend</url-pattern>
+        <url-pattern>/restricted/accept_friend</url-pattern>
+        <url-pattern>/restricted/remove_friend</url-pattern>
+        <url-pattern>/restricted/show_friends</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>binge_watching</servlet-name>
+        <servlet-class>com.tvseries.servlets.BingeWatchingServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>binge_watching</servlet-name>
+        <url-pattern>/restricted/binge_watching</url-pattern>
+    </servlet-mapping>
+
     <!-- Logging filter -->
     <filter>
         <filter-name>logging_filter</filter-name>
@@ -94,7 +118,6 @@
     <filter-mapping>
         <filter-name>logging_filter</filter-name>
         <url-pattern>/restricted/*</url-pattern>
-        <url-pattern>/update_list/*</url-pattern>
     </filter-mapping>
 
     <!-- Admin filter -->
